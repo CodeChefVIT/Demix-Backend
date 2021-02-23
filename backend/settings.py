@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'accounts',
+    'products',
 ]
 
 MIDDLEWARE = [
@@ -60,7 +61,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -88,11 +89,11 @@ DATABASES = {
 
 # Email Backend
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = os.environ.get('EMAIL_HOST')
-EMAIL_PORT = os.environ.get('EMAIL_PORT')
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_HOST = 'smtp.zoho.in'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'noreply@kalafex.com'
+DEFAULT_FROM_EMAIL = 'noreply@kalafex.com'
+EMAIL_HOST_PASSWORD = 'kalaFex@123'
 EMAIL_USE_TLS = True
 
 REST_FRAMEWORK = {
@@ -107,7 +108,12 @@ DJOSER = {
     'ACTIVATION_URL': 'activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
     'SEND_CONFIRMATION_EMAIL': True,
-    'SERIALIZERS': {}
+    #'SERIALIZERS': {
+    #    'activation': 'accounts.serializers.UserCreateSerializer'
+    #},
+    #'EMAIL': {
+    #        'activation': 'accounts.email.ActivationEmail'
+    #}
 }
 # Custom User Model
 AUTH_USER_MODEL = 'accounts.User'

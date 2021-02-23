@@ -1,9 +1,4 @@
 from django.shortcuts import render
-from .serializers import(
-    KalafexAdminRegisterSerializer,
-    ArtistRegisterSerializer,
-    CustomerRegisterSerializer
-)
 from .models import(
     User,
     KalafexAdmin,
@@ -14,6 +9,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework.views import APIView
+#from .serializers import ArtistSerializer
 
 # Create your views here.
 
@@ -70,3 +66,5 @@ class CustomerRegisterView(APIView):
             return Response({
                 'error': 'Invalid user.'
             }, status=400)
+
+#class ArtistListView
