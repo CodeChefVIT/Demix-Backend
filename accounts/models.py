@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 
 def image_directory_path(instance, filename):
     ext = filename.split('.')[1]
-    filename = f"{instance._id}.{ext}"
+    filename = f"{instance.user.id}.{ext}"
 
     return f"users/profile_pictures/{filename}"
 
@@ -72,7 +72,12 @@ class KalafexAdmin(models.Model):
 class Artist(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,
                                 primary_key=True)
-    date_of_birth = models.DateField() #YYYY-MM-DD
+    bio = models.TextField()
+    custom_url = models.CharField(max_length=255, unique=True)
+    date_of_birth = models.CharField(max_length=255) #YYYY-MM-DD
+    aadhar_card_no = models.TextField()
+    pan_card_no = models.TextField()
+    gst_no = models.TextField()
     profile_picture = models.ImageField(verbose_name='profile picture',
                                         upload_to=image_directory_path,
                                         default='uploads/profile_pictures/default.png',
@@ -80,6 +85,9 @@ class Artist(models.Model):
     
     def __str__(self):
         return self.user.full_name
+
+    class Meta:
+        ordering = ['user__full_name']
 
 
 class Customer(models.Model):
@@ -97,17 +105,21 @@ class Customer(models.Model):
 
 ADDRESS_CHOICES = (
     ('Billing', _('Billing')),
-    ('Shipping', _('Shipping'))
+    ('Shipping', _('Shipping')),
+    ('Pickup', _('Pickup'))
 )
 
-class BillingAddress(models.Model):
-    ba_id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+class Address(models.Model):
+    a_id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    street_address = models.TextField()
-    apartment_address = models.TextField()
-    country = models.CharField(max_length=100)
-    zip_code = models.CharField(max_length=100)
+    street = models.TextField()
+    city = models.CharField(max_length=255)
+    state = models.CharField(max_length=255)
+    pin_code = models.CharField(max_length=100)
     address_type = models.CharField(max_length=8, choices=ADDRESS_CHOICES)
     
     def __str__(self):
         return f"{self.user.full_name}'s {self.address_type} address"
+
+    class Meta:
+        verbose_name_plural = 'addresses'
