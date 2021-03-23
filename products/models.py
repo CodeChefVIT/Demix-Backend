@@ -11,6 +11,7 @@ User = get_user_model()
 class Category(models.Model):
     name = models.CharField(max_length=255, primary_key=True)
     description = models.TextField(null=True)
+    commission = models.DecimalField(max_digits=5, decimal_places=2)
 
     def __str__(self):
         return self.name
@@ -49,12 +50,18 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.PROTECT)
     subcategory = models.ForeignKey(SubCategory, on_delete=models.PROTECT)
     stock_left = models.IntegerField(default=0)
-    price = models.CharField(max_length=255)
+    original_price = models.DecimalField(max_digits=11, decimal_places=2)
+    kalafex_price = models.DecimalField(max_digits=12, decimal_places=2)
     click_count = models.BigIntegerField(default=0)
     purchase_count = models.BigIntegerField(default=0)
+    is_approved = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        self.kalafex_price = self.original_price * (100+self.category.commission) / 100
+        super(Product, self).save(*args, **kwargs)
 
     class Meta:
         ordering = ['-click_count']

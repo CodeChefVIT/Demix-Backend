@@ -16,7 +16,12 @@ class SubCategorySerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['pid','display_image', 'name', 'price', 'artist', 'category', 'subcategory']
+        fields = ['pid', 'name', 'artist', 'category', 'subcategory',
+                  'original_price', 'kalafex_price', 'display_image']
+        read_only_fields = ['kalafex_price']
+
+    def create(self, validated_data):
+        return Product.objects.create(**validated_data)
 
 
 class ParticularProductSerializer(serializers.ModelSerializer):
@@ -36,7 +41,8 @@ class ParticularProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['pid', 'name', 'description', 'category', 'subcategory', 
-                  'stock_left', 'price', 'artist', 'display_image', 'image_list']
+                  'stock_left', 'kalafex_price', 'artist', 'original_price',
+                  'display_image', 'image_list']
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
@@ -47,4 +53,10 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductImage
-        fields = ['image', 'mini_description']
+        fields = ['product', 'image', 'mini_description']
+
+
+class ProductImageCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductImage
+        fields = '__all__'

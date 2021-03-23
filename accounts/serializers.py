@@ -11,11 +11,21 @@ class KalafexAdminSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ArtistSerializer(serializers.ModelSerializer):
+    profile_picture = serializers.SerializerMethodField('_get_image_url')
+    
+    def _get_image_url(self, obj):
+        return self.context['request'].build_absolute_uri(obj.profile_picture.url)
+
     class Meta:
         model = Artist
         fields = '__all__'
 
 class CustomerSerializer(serializers.ModelSerializer):
+    profile_picture = serializers.SerializerMethodField('_get_image_url')
+    
+    def _get_image_url(self, obj):
+        return self.context['request'].build_absolute_uri(obj.profile_picture.url)
+
     class Meta:
         model = Customer
         fields = '__all__'

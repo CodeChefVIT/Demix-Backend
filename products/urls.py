@@ -28,7 +28,7 @@ urlpatterns = [
     path('view/product/category/<category>/', ProductbyCategoryListView.as_view()),
     path('view/product/subcategory/<subcategory>/', ProductbySubCategoryListView.as_view()),
     path('view/product/artist/<artist>/', ProductbyArtistListView.as_view()),
-    path('view/popular_products/', PopularProductListView.as_view()),
+    path('view/product/popular/', PopularProductListView.as_view()),
     path('view/product/<pid>/', ParticularProductView.as_view()),
     path('modify/product/<pid>/', ParticularProductModifyView.as_view()),
 ]

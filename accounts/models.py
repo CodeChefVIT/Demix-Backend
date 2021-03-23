@@ -39,6 +39,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone_number = models.CharField(max_length=50)
     is_active = models.BooleanField(default=True)
 
+    #Registration details
+    is_first_login = models.BooleanField(default=True)
+
     #Public types
     is_customer = models.BooleanField(default=False)
     is_artist = models.BooleanField(default=False)
@@ -58,7 +61,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
 
     REQUIRED_FIELDS = ['full_name', 'is_kalafex_admin', 'is_artist', 
-                       'is_customer']
+                       'is_customer', 'is_first_login']
 
 
 class KalafexAdmin(models.Model):

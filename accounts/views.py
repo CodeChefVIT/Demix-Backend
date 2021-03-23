@@ -16,7 +16,7 @@ from .serializers import (
     CustomerSerializer,
     AddressSerialzier
 )
-
+from .pagination import ResultSetPagination
 from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
 # Create your views here.
 
@@ -31,12 +31,11 @@ class KalafexAdminRegisterView(APIView):
         if obj.is_valid():
             obj.save()
             return Response({
-                'status': 'Successfully made user a Kalafex admin.'
+                'status': 'success',
+                'details': obj.data
             }, status=201)
         else:
-            return Response({
-                'error': 'Invalid user.'
-            }, status=400)
+            return Response(obj.errors, status=400)
 
 
 class ArtistRegisterView(APIView):
@@ -45,16 +44,15 @@ class ArtistRegisterView(APIView):
 
     def post(self, request):
         request.data['user'] = request.user.id
-        obj = ArtistSerializer(data=request.data)
+        obj = ArtistSerializer(data=request.data, context={'request': request})
         if obj.is_valid():
             obj.save()
             return Response({
-                'status': 'Successfully made user an artist.'
+                'status': 'success',
+                'details': obj.data
             }, status=201)
         else:
-            return Response({
-                'error': 'Invalid user.'
-            }, status=400)
+            return Response(obj.errors, status=400)
 
 
 class CustomerRegisterView(APIView):
@@ -63,16 +61,15 @@ class CustomerRegisterView(APIView):
 
     def post(self, request):
         request.data['user'] = request.user.id
-        obj = CustomerSerializer(data=request.data)
+        obj = CustomerSerializer(data=request.data, context={'request': request})
         if obj.is_valid():
             obj.save()
             return Response({
-                'status': 'Successfully made user a customer.'
+                'status': 'success',
+                'details': obj.data
             }, status=201)
         else:
-            return Response({
-                'error': 'Invalid user.'
-            }, status=400)
+            return Response(obj.errors, status=400)
 
 
 class AddressCreateView(APIView):
@@ -85,13 +82,11 @@ class AddressCreateView(APIView):
         if obj.is_valid():
             obj.save()
             return Response({
-                'status': 'Successfully added address.',
-                'a_id': obj.a_id
+                'status': 'success',
+                'details': obj.data
             }, status=201)
         else:
-            return Response({
-                'error': 'Invalid details.'
-            }, status=400)
+            return Response(obj.errors, status=400)
 
 
 class ArtistUpdateDeleteView(RetrieveUpdateDestroyAPIView):
@@ -114,6 +109,18 @@ class CustomerUpdateDeleteView(RetrieveUpdateDestroyAPIView):
         user = self.request.user
         customer = Customer.objects.get(user=user)
         return customer
+
+
+class ParticularAddressView(ListAPIView):
+    parser_classes = [JSONParser]
+    serializer_class = AddressSerialzier
+    lookup_url_kwarg = 'a_id'
+
+    def get_queryset(self):
+        a_id = self.kwargs.get(self.lookup_url_kwarg)
+        address = Address.objects.filter(a_id=a_id)
+        return address
+
 
 class AddressListView(ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -146,3 +153,10 @@ class ParticularArtistView(ListAPIView):
         custom_url = self.kwargs.get(self.lookup_url_kwarg)
         artist = Artist.objects.filter(custom_url=custom_url)
         return artist
+
+
+class ArtistListView(ListAPIView):
+    parser_classes = [FormParser, MultiPartParser, JSONParser]
+    serializer_class = ArtistSerializer
+    pagination_class = ResultSetPagination
+    queryset = Artist.objects.all()

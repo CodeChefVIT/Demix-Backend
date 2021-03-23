@@ -10,9 +10,11 @@ from .serializers import(
     SubCategorySerializer,
     ProductSerializer,
     ParticularProductSerializer,
-    ProductImageSerializer
+    ProductImageSerializer,
+    ProductImageCreateSerializer
 )
 from .models import Category, SubCategory, Product, ProductImage
+from .pagination import ResultSetPagination
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -49,11 +51,8 @@ class ProductCreateView(CreateAPIView):
 class ProductImageCreateView(CreateAPIView):
     queryset = ProductImage.objects.all()
     permission_classes = [IsAuthenticated, IsArtist]
-    serializer_class = ProductImageSerializer
+    serializer_class = ProductImageCreateSerializer
     parser_classes = [FormParser, MultiPartParser]
-
-    def perform_save(self, serializer):
-        serializer.save(product=self.request['product'])
 
 
 class CategoryUpdateDeleteView(RetrieveUpdateDestroyAPIView):
@@ -100,14 +99,18 @@ class AllSubCategoriesView(ListAPIView):
         )
         return subcategories
 
+
 class PopularProductListView(ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    parser_classes = [FormParser, MultiPartParser]
+    parser_classes = [FormParser, MultiPartParser, JSONParser]
+    pagination_class = ResultSetPagination
+
 
 class ProductbyCategoryListView(ListAPIView):
     serializer_class = ProductSerializer
-    parser_classes = [JSONParser]
+    parser_classes = [FormParser, MultiPartParser, JSONParser]
+    pagination_class = ResultSetPagination
     lookup_url_kwarg = "category"
 
     def get_queryset(self):
@@ -120,7 +123,8 @@ class ProductbyCategoryListView(ListAPIView):
 
 class ProductbySubCategoryListView(ListAPIView):
     serializer_class = ProductSerializer
-    parser_classes = [JSONParser]
+    parser_classes = [FormParser, MultiPartParser, JSONParser]
+    pagination_class = ResultSetPagination
     lookup_url_kwarg = "subcategory"
 
     def get_queryset(self):
@@ -133,7 +137,8 @@ class ProductbySubCategoryListView(ListAPIView):
 
 class ProductbyArtistListView(ListAPIView):
     serializer_class = ProductSerializer
-    parser_classes = [JSONParser]
+    parser_classes = [FormParser, MultiPartParser, JSONParser]
+    pagination_class = ResultSetPagination
     lookup_url_kwarg = "artist"
 
     def get_queryset(self):
@@ -147,6 +152,7 @@ class ProductbyArtistListView(ListAPIView):
 class ParticularProductView(ListAPIView):
     serializer_class = ParticularProductSerializer
     parser_classes = [FormParser, MultiPartParser, JSONParser]
+    pagination_class = ResultSetPagination
     lookup_url_kwarg = "pid"
 
     def get_queryset(self):
@@ -159,6 +165,7 @@ class ParticularProductModifyView(RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated, IsArtist]
     serializer_class = ParticularProductSerializer
     parser_classes = [FormParser, MultiPartParser, JSONParser]
+    pagination_class = ResultSetPagination
     lookup_url_kwarg = "pid"
 
     def get_queryset(self):
