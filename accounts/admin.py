@@ -21,12 +21,17 @@ class UserAdmin(BaseUserAdmin):
             _('Website Roles'),
             {'fields': ('is_kalafex_admin', 'is_artist', 'is_customer')}
         ),
+        (
+            _('Registration details'),
+            {'fields': ('is_first_login',)}
+        ),
         (_('Important Dates'), {'fields': ('last_login',)})
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password')
+            'fields': ('email', 'password', 'full_name', 'is_kalafex_admin',
+                       'is_artist', 'is_customer', 'is_first_login')
         }),
     )
 
