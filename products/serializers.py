@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models import Category, SubCategory, Product, ProductImage
+from accounts.models import Artist
+from accounts.serializers import ArtistSerializer
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,7 +19,7 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['pid', 'name', 'artist', 'category', 'subcategory',
-                  'original_price', 'kalafex_price', 'display_image']
+                  'original_price', 'kalafex_price', 'display_image', 'discount_price']
         read_only_fields = ['kalafex_price']
 
     def create(self, validated_data):
@@ -26,6 +28,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class ParticularProductSerializer(serializers.ModelSerializer):
     image_list = serializers.SerializerMethodField('_get_related_images')
+    artist = serializers.SerializerMethodField('_get_related_artist')
 
     def _get_related_images(self, obj):
         images = ProductImage.objects.filter(
@@ -38,11 +41,17 @@ class ParticularProductSerializer(serializers.ModelSerializer):
         ).data
         return image_list
 
+    def _get_related_artist(self, obj):
+        required_artist = Artist.objects.get(user=obj.artist)
+        serialized_artist = ArtistSerializer(required_artist, 
+                                             context=self.context).data
+        return serialized_artist
+
     class Meta:
         model = Product
         fields = ['pid', 'name', 'description', 'category', 'subcategory', 
                   'stock_left', 'kalafex_price', 'artist', 'original_price',
-                  'display_image', 'image_list']
+                  'discount_price', 'display_image', 'image_list']
 
 
 class ProductImageSerializer(serializers.ModelSerializer):

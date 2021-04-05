@@ -152,7 +152,6 @@ class ProductbyArtistListView(ListAPIView):
 class ParticularProductView(ListAPIView):
     serializer_class = ParticularProductSerializer
     parser_classes = [FormParser, MultiPartParser, JSONParser]
-    pagination_class = ResultSetPagination
     lookup_url_kwarg = "pid"
 
     def get_queryset(self):

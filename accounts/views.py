@@ -12,6 +12,7 @@ from rest_framework import permissions
 from rest_framework.views import APIView
 from .serializers import (
     KalafexAdminSerializer,
+    ArtistCreateSerializer,
     ArtistSerializer,
     CustomerSerializer,
     AddressSerialzier
@@ -40,11 +41,11 @@ class KalafexAdminRegisterView(APIView):
 
 class ArtistRegisterView(APIView):
     permission_classes = [permissions.IsAuthenticated]
-    parser_classes = [FormParser, MultiPartParser, JSONParser]
+    parser_classes = [FormParser, MultiPartParser]
 
     def post(self, request):
-        request.data['user'] = request.user.id
-        obj = ArtistSerializer(data=request.data, context={'request': request})
+        #request.data['user'] = request.user.id
+        obj = ArtistCreateSerializer(data=request.data, context={'request': request})
         if obj.is_valid():
             obj.save()
             return Response({
@@ -61,7 +62,7 @@ class CustomerRegisterView(APIView):
 
     def post(self, request):
         request.data['user'] = request.user.id
-        obj = CustomerSerializer(data=request.data, context={'request': request})
+        obj = CustomerCreateSerializer(data=request.data, context={'request': request})
         if obj.is_valid():
             obj.save()
             return Response({

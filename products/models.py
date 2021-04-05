@@ -52,6 +52,8 @@ class Product(models.Model):
     stock_left = models.IntegerField(default=0)
     original_price = models.DecimalField(max_digits=11, decimal_places=2)
     kalafex_price = models.DecimalField(max_digits=12, decimal_places=2)
+    discount_price = models.DecimalField(max_digits=12, decimal_places=2,
+                                         blank=True, null=True)
     click_count = models.BigIntegerField(default=0)
     purchase_count = models.BigIntegerField(default=0)
     is_approved = models.BooleanField(default=False)

@@ -8,5 +8,6 @@ urlpatterns = [
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
     path('accounts/', include('accounts.urls')),
-    path('store/', include('products.urls'))
+    path('store/', include('products.urls')),
+    path('orders/', include('orders.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
