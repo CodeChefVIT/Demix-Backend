@@ -25,6 +25,13 @@ class OrderProductSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Payment
+        fields = '__all__'
+        optional_fields = ['razorpay_payment_id']
+
+
 class OrderSerializer(serializers.ModelSerializer):
     orderproduct_set = OrderProductSerializer(many=True, read_only=True)
     price = serializers.SerializerMethodField('_get_order_price')
@@ -40,11 +47,4 @@ class OrderSerializer(serializers.ModelSerializer):
                   'coupon', 'start_date', 'ordered_date', 'being_delivered',
                   'received', 'refund_requested', 'refund_granted',
                   'orderproduct_set', 'price', 'payment']
-
-
-class PaymentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Payment
-        fields = '__all__'
-        optional_fields = ['razorpay_payment_id']
 
