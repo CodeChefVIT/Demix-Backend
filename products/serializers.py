@@ -24,7 +24,7 @@ class ProductSerializer(serializers.ModelSerializer):
     artist = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), default=serializers.CurrentUserDefault())
     class Meta:
         model = Product
-        fields = ['pid', 'name', 'artist', 'category', 'subcategory',
+        fields = ['pid', 'name', 'artist', 'description', 'category', 'subcategory',
                   'original_price', 'kalafex_price', 'display_image', 'discount_price']
         read_only_fields = ['kalafex_price']
 

@@ -13,7 +13,8 @@ from .views import(
     ParticularProductView,
     ParticularProductModifyView,
     AllCategoriesView,
-    AllSubCategoriesView
+    AllSubCategoriesView,
+    ProductSearchView
 )
 
 urlpatterns = [
@@ -31,4 +32,5 @@ urlpatterns = [
     path('view/product/popular/', PopularProductListView.as_view()),
     path('view/product/<pid>/', ParticularProductView.as_view()),
     path('modify/product/<pid>/', ParticularProductModifyView.as_view()),
+    path('search/product/', ProductSearchView.as_view()),
 ]

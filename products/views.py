@@ -17,6 +17,7 @@ from .models import Category, SubCategory, Product, ProductImage
 from .pagination import ResultSetPagination
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.filters import SearchFilter
 
 
 class CategoryCreateView(CreateAPIView):
@@ -171,3 +172,13 @@ class ParticularProductModifyView(RetrieveUpdateDestroyAPIView):
         pid = self.kwargs.get(self.lookup_url_kwarg)
         product = Product.objects.filter(pid=pid)
         return product
+
+
+class ProductSearchView(ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = [SearchFilter]
+    search_fields = ['name', 'description']
+    parser_classes = [FormParser, MultiPartParser, JSONParser]
+    pagination_class = ResultSetPagination
+    
