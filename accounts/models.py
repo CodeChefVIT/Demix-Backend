@@ -63,7 +63,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
 
     REQUIRED_FIELDS = ['full_name', 'is_kalafex_admin', 'is_artist', 
-                       'is_customer', 'is_first_login']
+                       'is_customer', 'is_first_login', 'date_of_birth']
 
 
 class KalafexAdmin(models.Model):
