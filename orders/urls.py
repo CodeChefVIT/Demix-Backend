@@ -6,7 +6,9 @@ from .views import (
     OrderListView,
     OrderProductCreateView,
     OrderProductModifyView,
-    CartView
+    CartView,
+    PaymentCreateView,
+    PaymentVerifyView,
 )
 
 urlpatterns = [
@@ -17,4 +19,6 @@ urlpatterns = [
     path('create/order_product/', OrderProductCreateView.as_view()),
     path('modify/order_product/<str:op_id>/', OrderProductModifyView.as_view()),
     path('view/cart/', CartView.as_view()),
+    path('create/payment/', PaymentCreateView.as_view()),
+    path('verify/payment/', PaymentVerifyView.as_view()),
 ]

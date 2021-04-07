@@ -53,6 +53,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
 
+    date_of_birth = models.DateField()
+
     def __str__(self):
         return self.full_name
 
@@ -77,7 +79,6 @@ class Artist(models.Model):
                                 primary_key=True)
     bio = models.TextField(blank=True, null=True)
     custom_url = models.CharField(max_length=255, unique=True)
-    date_of_birth = models.CharField(max_length=255, blank=True, null=True) #YYYY-MM-DD
     aadhar_card_no = models.TextField(blank=True, null=True)
     pan_card_no = models.TextField(blank=True, null=True)
     gst_no = models.TextField(blank=True, null=True)
@@ -96,7 +97,6 @@ class Artist(models.Model):
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,
                                 primary_key=True)
-    date_of_birth = models.DateField(blank=True, null=True) #YYYY-MM-DD
     profile_picture = models.ImageField(verbose_name='profile picture',
                                         upload_to=image_directory_path,
                                         default='uploads/profile_pictures/default.png',

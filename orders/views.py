@@ -6,11 +6,16 @@ from accounts.permissions import IsArtist, IsKalafexAdmin
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.parsers import JSONParser
-from .models import Order, OrderProduct
+from .models import Order, OrderProduct, Payment
 from .pagination import ResultSetPagination
-from .serializers import OrderSerializer, OrderProductSerializer, ParticularOrderSerializer
+from .serializers import OrderSerializer, OrderProductSerializer, ParticularOrderSerializer, PaymentSerializer
+
+import razorpay
 
 # Create your views here.
+
+client = razorpay.Client(auth=("rzp_test_lVBKYGGW6umcct", "syQEJEUbw0vZyTnKfZ8ApVqJ"))
+
 
 class OrderCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -144,3 +149,53 @@ class CartView(ListAPIView):
         user = self.request.user
         order_products = OrderProduct.objects.filter(user=user, ordered=False)
         return order_products
+
+
+class PaymentCreateView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [JSONParser]
+
+    def post(self, request):
+        request.data['user'] = request.user.id
+        #Convert to paise
+        amount = request.data['amount'] * 100
+        data = {
+            'amount': amount,
+            'currency': 'INR',
+            'receipt': request.data['order'],
+            'notes': {
+                'user_id': request.user.id,
+                'name': request.user.full_name,
+                'internal_order_id': request.data['order']
+            }
+        }
+        razorpay_order = client.order.create(data=data)
+        request.data['razorpay_order_id'] = razorpay_order['id']
+        payment_object = PaymentSerializer(data=request.data)
+        if payment_object.is_valid():
+            payment_object.save()
+            return Response({
+                'status': 'success',
+                'razorpay_details': razorpay_order,
+                'internal_details': payment_object.data
+            }, status=201)
+        else:
+            return Response(payment_object.errors, status=400)
+
+
+class PaymentVerifyView(APIView):
+    # We don't use parsers for the Razorpay webhook. The data is meant to be processed raw,
+    # without any parsing or so in the middle.
+
+    def get(self, request):
+        if request.data['razorpay_payment_id']:
+            try:
+                webhook_signature = request.headers.get('X-Razorpay-Signature')
+                result = client.utility.verify_webhook_signature(request.data, # pass raw data
+                                                                 webhook_signature,
+                                                                 webhook_secret) #set secret up
+                obj = Payment.objects.get(razorpay_order_id=request.data['razorpay_order_id'])
+                obj.paid_successfully = True
+                obj.save()
+            except:
+                pass

@@ -2,6 +2,11 @@ from rest_framework import serializers
 from .models import Category, SubCategory, Product, ProductImage
 from accounts.models import Artist
 from accounts.serializers import ArtistSerializer
+from django.contrib.auth import get_user_model
+
+
+User = get_user_model()
+
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,6 +21,7 @@ class SubCategorySerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    artist = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), default=serializers.CurrentUserDefault())
     class Meta:
         model = Product
         fields = ['pid', 'name', 'artist', 'category', 'subcategory',

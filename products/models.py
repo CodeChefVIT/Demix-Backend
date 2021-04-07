@@ -47,8 +47,8 @@ class Product(models.Model):
         default='products/image_unavailable.png'
     )
     artist = models.ForeignKey(User, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.PROTECT)
-    subcategory = models.ForeignKey(SubCategory, on_delete=models.PROTECT)
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
+    subcategory = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, blank=True)
     stock_left = models.IntegerField(default=0)
     original_price = models.DecimalField(max_digits=11, decimal_places=2)
     kalafex_price = models.DecimalField(max_digits=12, decimal_places=2)
