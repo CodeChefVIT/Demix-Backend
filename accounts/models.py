@@ -36,7 +36,7 @@ class CustomUserManager(BaseUserManager):
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(max_length=255, unique=True)
     full_name = models.TextField()
-    phone_number = models.CharField(max_length=50)
+    phone_number = models.CharField(max_length=50, unique=True)
     is_active = models.BooleanField(default=True)
 
     #Registration details
@@ -63,7 +63,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
 
     REQUIRED_FIELDS = ['full_name', 'is_kalafex_admin', 'is_artist', 
-                       'is_customer', 'is_first_login', 'date_of_birth']
+                       'is_customer', 'is_first_login', 'date_of_birth',
+                       'phone_number']
 
 
 class KalafexAdmin(models.Model):
