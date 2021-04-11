@@ -27,6 +27,11 @@ SECRET_KEY = 'q(12une442^q-h(i-qn7mn0ekv55hy2^5x)i(7p*0fo$$k6dpn'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# Djoser mailing settings
+DOMAIN = 'beta.kalafex.com'
+SITE_NAME = 'Kalafex'
+PROTOCOL = 'https'
+
 ALLOWED_HOSTS = []
 
 
@@ -118,9 +123,9 @@ DJOSER = {
     #'SERIALIZERS': {
     #    'activation': 'accounts.serializers.UserCreateSerializer'
     #},
-    #'EMAIL': {
-    #        'activation': 'accounts.email.ActivationEmail'
-    #}
+    'EMAIL': {
+            'activation': 'accounts.email.ActivationEmail'
+    }
 }
 # Custom User Model
 AUTH_USER_MODEL = 'accounts.User'

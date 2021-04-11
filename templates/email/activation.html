@@ -1,0 +1,28 @@
+{% load i18n %}
+
+{% block subject %}
+Verify your Kalafex Account
+{% endblock subject %}
+
+{% block text_body %}
+{% blocktrans %}You're receiving this email because you need to finish verifying your Kalafex account.{% endblocktrans %}
+
+{% trans "Click on the link below to verify your account:" %}
+{{ protocol }}://{{ domain }}/{{ url|safe }}
+
+{% trans "Thanks for using our site!" %}
+
+{% blocktrans %}The Kalafex team{% endblocktrans %}
+{% endblock text_body %}
+
+{% block html_body %}
+<p>{% blocktrans %}You're receiving this email because you need to finish verifying your Kalafex account.{% endblocktrans %}</p>
+
+<p>{% trans "Click on the link below to verify your account:" %}</p>
+<p><a href="{{ protocol }}://{{ domain }}/{{ url|safe }}">{{ protocol }}://{{ domain }}/{{ url|safe }}</a></p>
+
+<p>{% trans "Thanks for using our site!" %}</p>
+
+<p>{% blocktrans %}The Kalafex team{% endblocktrans %}</p>
+
+{% endblock html_body %}
