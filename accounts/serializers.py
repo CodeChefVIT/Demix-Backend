@@ -29,6 +29,12 @@ class ArtistSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ArtistModifySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Artist
+        fields = '__all__'
+
+
 class CustomerCreateSerializer(serializers.ModelSerializer):
     # See https://stackoverflow.com/questions/52367379/why-is-django-rest-frameworks-request-data-sometimes-immutable
     user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), default=serializers.CurrentUserDefault())

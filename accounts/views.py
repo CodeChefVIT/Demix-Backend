@@ -14,6 +14,7 @@ from .serializers import (
     KalafexAdminSerializer,
     ArtistCreateSerializer,
     ArtistSerializer,
+    ArtistModifySerializer,
     CustomerSerializer,
     AddressSerialzier
 )
@@ -93,7 +94,7 @@ class AddressCreateView(APIView):
 class ArtistUpdateDeleteView(RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [FormParser, MultiPartParser, JSONParser]
-    serializer_class = ArtistSerializer
+    serializer_class = ArtistModifySerializer
 
     def get_object(self):
         user = self.request.user

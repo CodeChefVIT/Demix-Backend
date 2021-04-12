@@ -8,10 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 # Create your models here.
 
 def image_directory_path(instance, filename):
-    ext = filename.split('.')[1]
-    filename = f"{instance.user.id}.{ext}"
-
-    return f"users/profile_pictures/{filename}"
+    return f"users/profile_pictures/{instance.user.id}/{filename}/"
 
 class CustomUserManager(BaseUserManager):
 
