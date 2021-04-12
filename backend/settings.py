@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'accounts',
     'products',
     'orders',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -162,14 +163,28 @@ USE_L10N = True
 
 USE_TZ = True
 
+# AWS
+AWS_ACCESS_KEY_ID = 'AKIAR2UOYD2SUDACUPUK'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'kalafex-media'
+AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+STATIC_LOCATION = 'static'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
+MEDIA_LOCATION = 'media'
+DEFAULT_FILE_STORAGE = 'backend.storage_backends.MediaStorage'
+MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
+#STATIC_URL = '/static/'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / '/media/'
+#MEDIA_URL = '/media/'
+#MEDIA_ROOT = BASE_DIR / '/media/'
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
