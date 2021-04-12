@@ -8,7 +8,14 @@ from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDe
 from rest_framework.parsers import JSONParser
 from .models import Order, OrderProduct, Payment
 from .pagination import ResultSetPagination
-from .serializers import OrderSerializer, OrderProductSerializer, ParticularOrderSerializer, PaymentSerializer
+from .serializers import(
+    OrderSerializer,
+    OrderProductSerializer,
+    ParticularOrderSerializer,
+    PaymentSerializer,
+    RefundOrderSerializer
+)
+from accounts.permissions import IsKalafexAdmin
 
 import razorpay
 
@@ -156,31 +163,42 @@ class PaymentCreateView(APIView):
     parser_classes = [JSONParser]
 
     def post(self, request):
-        request.data['user'] = request.user.id
-        #Convert to paise
-        amount = request.data['amount'] * 100
-        data = {
-            'amount': amount,
-            'currency': 'INR',
-            'receipt': request.data['order'],
-            'notes': {
-                'user_id': request.user.id,
-                'name': request.user.full_name,
-                'internal_order_id': request.data['order']
-            }
-        }
-        razorpay_order = client.order.create(data=data)
-        request.data['razorpay_order_id'] = razorpay_order['id']
-        payment_object = PaymentSerializer(data=request.data)
-        if payment_object.is_valid():
-            payment_object.save()
+        try:
+            obj = Payment.objects.get(order=request.data['order'],
+                                      paid_successfully=False)
+            serializer = PaymentSerializer(obj)
+            razorpay_details = client.order.fetch(obj.razorpay_order_id)
             return Response({
                 'status': 'success',
-                'razorpay_details': razorpay_order,
-                'internal_details': payment_object.data
-            }, status=201)
-        else:
-            return Response(payment_object.errors, status=400)
+                'razorpay_details': razorpay_details,
+                'internal_details': serializer.data
+            }, status=200)
+        except Payment.DoesNotExist:
+            request.data['user'] = request.user.id
+            #Convert to paise
+            amount = request.data['amount'] * 100
+            data = {
+                'amount': amount,
+                'currency': 'INR',
+                'receipt': request.data['order'],
+                'notes': {
+                    'user_id': request.user.id,
+                    'name': request.user.full_name,
+                    'internal_order_id': request.data['order']
+                }
+            }
+            razorpay_order = client.order.create(data=data)
+            request.data['razorpay_order_id'] = razorpay_order['id']
+            payment_object = PaymentSerializer(data=request.data)
+            if payment_object.is_valid():
+                payment_object.save()
+                return Response({
+                    'status': 'success',
+                    'razorpay_details': razorpay_order,
+                    'internal_details': payment_object.data
+                }, status=201)
+            else:
+                return Response(payment_object.errors, status=400)
 
 
 class PaymentVerifyView(APIView):
@@ -199,3 +217,43 @@ class PaymentVerifyView(APIView):
                 obj.save()
             except:
                 pass
+
+
+class RequestRefundView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [JSONParser]
+    
+    def post(self, request):
+        order_id = request.data['order']
+        try:
+            obj = Order.objects.get(o_id=order_id)
+            if obj.payment.paid_successfully:
+                obj.refund_requested = True
+                obj.save()
+                serializer = OrderSerializer(obj)
+                return Response({
+                    'status': 'success',
+                    'details': serializer.data
+                }, status=200)
+            else:
+                return Response({
+                    'status': 'error',
+                    'details': 'Order has not been paid for.'
+                }, status=400)
+        except Order.DoesNotExist:
+            return Response({
+                'status': 'error',
+                'details': 'Order not found.'
+            }, status=400)
+
+
+class RefundRequestsView(ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, IsKalafexAdmin]
+    parser_classes = [JSONParser]
+    serializer_class = RefundOrderSerializer
+    pagination_class = ResultSetPagination
+
+    def get_queryset(self, *args, **kwargs):
+        refund_orders = Order.objects.filter(refund_requested=True,
+                                      refund_granted=False)
+        return refund_orders

@@ -30,8 +30,11 @@ class Order(models.Model):
     being_delivered = models.BooleanField(default=False)
     received = models.BooleanField(default=False)
 
+    refund_requested = models.BooleanField(default=False)
+    refund_granted = models.BooleanField(default=False)
+
     def __str__(self):
-        return f"{self.user.full_name}'s order at {self.start_date}"
+        return f"{self.user.full_name}'s order - {self.o_id} at {self.start_date.strftime('%d-%m-%Y')}"
     
     @property
     def get_total(self):
@@ -80,15 +83,12 @@ class OrderProduct(models.Model):
 
 class Payment(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
-    order = models.ForeignKey(Order, on_delete=models.SET_NULL, blank=True, null=True)
+    order = models.OneToOneField(Order, on_delete=models.SET_NULL, blank=True, null=True)
     razorpay_order_id = models.TextField()
     razorpay_payment_id = models.TextField(blank=True, null=True)
     amount = models.DecimalField(max_digits=15, decimal_places=2)
     timestamp = models.DateTimeField(auto_now_add=True)
     paid_successfully = models.BooleanField(default=False)
-    
-    refund_requested = models.BooleanField(default=False)
-    refund_granted = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.user.full_name}'s Razorpay Payment - {self.razorpay_order_id}"

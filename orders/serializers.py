@@ -48,3 +48,10 @@ class OrderSerializer(serializers.ModelSerializer):
                   'received', 'refund_requested', 'refund_granted',
                   'orderproduct_set', 'price', 'payment']
 
+
+class RefundOrderSerializer(serializers.ModelSerializer):
+    payment = PaymentSerializer(read_only=True)
+    
+    class Meta:
+        model = Order
+        fields = '__all__'

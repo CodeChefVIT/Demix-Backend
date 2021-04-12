@@ -9,6 +9,8 @@ from .views import (
     CartView,
     PaymentCreateView,
     PaymentVerifyView,
+    RequestRefundView,
+    RefundRequestsView
 )
 
 urlpatterns = [
@@ -21,4 +23,6 @@ urlpatterns = [
     path('view/cart/', CartView.as_view()),
     path('create/payment/', PaymentCreateView.as_view()),
     path('verify/payment/', PaymentVerifyView.as_view()),
+    path('request_refund/', RequestRefundView.as_view()),
+    path('view_refund_requests/', RefundRequestsView.as_view())
 ]
