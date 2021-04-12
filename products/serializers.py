@@ -48,10 +48,13 @@ class ParticularProductSerializer(serializers.ModelSerializer):
         return image_list
 
     def _get_related_artist(self, obj):
-        required_artist = Artist.objects.get(user=obj.artist)
-        serialized_artist = ArtistSerializer(required_artist, 
+        try:
+            required_artist = Artist.objects.get(user=obj.artist)
+            serialized_artist = ArtistSerializer(required_artist, 
                                              context=self.context).data
-        return serialized_artist
+            return serialized_artist
+        except:
+            return None
 
     class Meta:
         model = Product
