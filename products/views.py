@@ -158,6 +158,9 @@ class ParticularProductView(ListAPIView):
     def get_queryset(self):
         pid = self.kwargs.get(self.lookup_url_kwarg)
         product = Product.objects.filter(pid=pid)
+        # Update click count
+        product.click_count += 1
+        product.save()
         return product
 
 
