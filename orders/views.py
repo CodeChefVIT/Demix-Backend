@@ -98,6 +98,19 @@ class OrderListView(ListAPIView):
         return order
 
 
+class PreviousOrdersListView(ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [JSONParser]
+    serializer_class = OrderSerializer
+    pagination_class = ResultSetPagination
+
+    def get_queryset(self, *args, **kwargs):
+        user = self.request.user
+        order = Order.objects.filter(user=user,
+                                     payment__paid_successfully=True)
+        return order
+
+
 class OrderProductCreateView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [JSONParser]
