@@ -46,13 +46,19 @@ class ArtistRegisterView(APIView):
 
     def post(self, request):
         #request.data['user'] = request.user.id
-        obj = ArtistCreateSerializer(data=request.data, context={'request': request})
-        if obj.is_valid():
-            obj.save()
+        try:
+            obj = ArtistCreateSerializer(data=request.data, context={'request': request})
+            if obj.is_valid():
+                obj.save()
+                return Response({
+                    'status': 'success',
+                    'details': obj.data
+                }, status=201)
+        except:
             return Response({
-                'status': 'success',
-                'details': obj.data
-            }, status=201)
+                'status': 'error',
+                'details': 'This user already has an Artist profile.'
+            }, status=400)
         else:
             return Response(obj.errors, status=400)
 
