@@ -6,14 +6,15 @@ from accounts.permissions import IsArtist, IsKalafexAdmin
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.parsers import JSONParser
-from .models import Order, OrderProduct, Payment
+from .models import Order, OrderProduct, Payment, Refund
 from .pagination import ResultSetPagination
 from .serializers import(
     OrderSerializer,
     OrderProductSerializer,
     ParticularOrderSerializer,
     PaymentSerializer,
-    RefundOrderSerializer
+    RefundOrderSerializer,
+    RefundSerializer
 )
 from accounts.permissions import IsKalafexAdmin
 
@@ -228,14 +229,25 @@ class RequestRefundView(APIView):
         try:
             obj = Order.objects.get(o_id=order_id)
             if obj.payment.paid_successfully:
-                obj.refund_requested = True
-                obj.save()
-                serializer = OrderSerializer(obj)
-                return Response({
-                    'status': 'success',
-                    'details': serializer.data
-                }, status=200)
-            else:
+                # --!--
+                request.data['accepted'] = False
+                refund_serializer = RefundSerializer(data=request.data)
+                if refund_serializer.is_valid():
+                    refund_serializer.save()
+                    obj.refund_requested = True
+                    obj.save()
+                    serializer = OrderSerializer(obj)
+                    return Response({
+                        'status': 'success',
+                        'order_details': serializer.data,
+                        'refund_details': refund_serializer.data
+                    }, status=200)
+                else:
+                    return Response({
+                        'status': 'error',
+                        'detail': 'Error creating a refund object.'
+                    }, status=400)
+            else:    
                 return Response({
                     'status': 'error',
                     'details': 'Order has not been paid for.'
@@ -257,3 +269,27 @@ class RefundRequestsView(ListAPIView):
         refund_orders = Order.objects.filter(refund_requested=True,
                                       refund_granted=False)
         return refund_orders
+
+
+class GrantRefundView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsKalafexAdmin]
+    parser_classes = [JSONParser]
+    serializer_class = RefundOrderSerializer
+
+    def post(self, request):
+        try:
+            order = Order.objects.get(o_id=request.data['order'])
+            refund = Refund.objects.get(order=order.o_id)
+            order.refund_granted = True
+            order.save()
+            refund.accepted = True
+            refund.save()
+            return Response({
+                'status': 'success',
+                'details': 'Stored successful refund grant.'
+            }, status=200)
+        except:
+            return Response({
+                'status': 'error',
+                'detail': 'Refund has not been requested for this order.'
+            }, status=400)
