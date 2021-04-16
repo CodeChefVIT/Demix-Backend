@@ -16,7 +16,7 @@ from .serializers import (
     ArtistSerializer,
     ArtistModifySerializer,
     CustomerSerializer,
-    AddressSerialzier
+    AddressSerializer
 )
 from .pagination import ResultSetPagination
 from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
@@ -121,7 +121,7 @@ class CustomerUpdateDeleteView(RetrieveUpdateDestroyAPIView):
 
 class ParticularAddressView(ListAPIView):
     parser_classes = [JSONParser]
-    serializer_class = AddressSerialzier
+    serializer_class = AddressSerializer
     lookup_url_kwarg = 'a_id'
 
     def get_queryset(self):
@@ -133,7 +133,7 @@ class ParticularAddressView(ListAPIView):
 class AddressListView(ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [JSONParser]
-    serializer_class = AddressSerialzier
+    serializer_class = AddressSerializer
 
     def get_queryset(self, *args, **kwargs):
         user = self.request.user
@@ -143,7 +143,7 @@ class AddressListView(ListAPIView):
 class AddressUpdateDeleteView(RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [JSONParser]
-    serializer_class = AddressSerialzier
+    serializer_class = AddressSerializer
     lookup_field = 'a_id'
 
     def get_queryset(self, *args, **kwargs):
