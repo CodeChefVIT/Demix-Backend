@@ -229,6 +229,13 @@ class PaymentVerifyView(APIView):
                 obj = Payment.objects.get(razorpay_order_id=request.data['razorpay_order_id'])
                 obj.paid_successfully = True
                 obj.save()
+                order = Order.objects.get(o_id=obj.order)
+                for order_product in order.order_products.all():
+                    order_product.product.purchase_count += order_product.quantity
+                    order_product.artist.balance += (
+                        order_product.quantity * order_product.product.original_price
+                    )
+                    order_product.save()
             except:
                 pass
 

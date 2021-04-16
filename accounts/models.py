@@ -85,10 +85,38 @@ class Artist(models.Model):
                                         default='uploads/profile_pictures/default.png',
                                         null=True)
     cashout_requested = models.BooleanField(default=False)
+    balance = models.DecimalField(max_digits=14, decimal_places=2)
 
-    
     def __str__(self):
         return self.user.full_name
+
+    @property
+    def get_cumulative_product_hits(self):
+        hits = 0
+        for product in self.user.product_set.all():
+            hits += product.click_count
+        return hits
+
+    @property
+    def get_cumulative_sales(self):
+        total_sales = 0
+        for product in self.user.product_set.all():
+            total_sales += product.purchase_count * product.kalafex_price
+        return total_sales
+
+    @property
+    def get_cumulative_earnings(self):
+        total_earnings = 0
+        for product in self.user.product_set.all():
+            total_earnings += product.purchase_count * product.original_price
+        return total_earnings
+
+    @property
+    def get_cumulative_order_count(self):
+        order_count = 0
+        for product in self.user.product_set.all():
+            order_count += product.purchase_count
+        return order_count
 
     class Meta:
         ordering = ['user__full_name']

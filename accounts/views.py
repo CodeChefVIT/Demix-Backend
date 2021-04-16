@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.shortcuts import render
 from .models import(
     User,
@@ -9,12 +11,14 @@ from .models import(
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework import permissions
+from .permissions import IsKalafexAdmin, IsArtist
 from rest_framework.views import APIView
 from .serializers import (
     KalafexAdminSerializer,
     ArtistCreateSerializer,
     ArtistSerializer,
     ArtistModifySerializer,
+    ArtistPersonalSerializer,
     CustomerSerializer,
     AddressSerializer
 )
@@ -106,6 +110,26 @@ class ArtistUpdateDeleteView(RetrieveUpdateDestroyAPIView):
         user = self.request.user
         artist = Artist.objects.get(user=user)
         return artist
+
+
+class ArtistPersonalInsightsView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsArtist]
+    parser_classes = [FormParser, MultiPartParser, JSONParser]
+
+    def get(self, request):
+        user = request.user.id
+        try:
+            artist_profile = Artist.objects.get(user=user)
+            serializer = ArtistPersonalSerializer(artist_profile)
+            return Response({
+                'status': 'success',
+                'details': serializer.data
+            }, status=200)
+        except Artist.DoesNotExist:
+            return Response({
+                'status': 'error',
+                'details': 'Artist profile does not exist for this user.'
+            }, status=400)
 
 
 class CustomerUpdateDeleteView(RetrieveUpdateDestroyAPIView):
