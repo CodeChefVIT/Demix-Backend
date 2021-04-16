@@ -130,6 +130,11 @@ class ArtistPersonalInsightsView(APIView):
                 'status': 'error',
                 'details': 'Artist profile does not exist for this user.'
             }, status=400)
+        except:
+            return Response({
+                'status': 'error',
+                'details': 'Error registering an Artist profile.'
+            }, status=400)
 
 
 class CustomerUpdateDeleteView(RetrieveUpdateDestroyAPIView):

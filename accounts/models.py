@@ -4,6 +4,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, \
 import uuid
 import os
 from django.utils.translation import ugettext_lazy as _
+from decimal import Decimal
 
 # Create your models here.
 
@@ -85,7 +86,7 @@ class Artist(models.Model):
                                         default='uploads/profile_pictures/default.png',
                                         null=True)
     cashout_requested = models.BooleanField(default=False)
-    balance = models.DecimalField(max_digits=14, decimal_places=2)
+    balance = models.DecimalField(max_digits=14, decimal_places=2, default=Decimal('0.00'))
 
     def __str__(self):
         return self.user.full_name
