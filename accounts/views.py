@@ -58,7 +58,7 @@ class ArtistRegisterView(APIView):
                     'status': 'success',
                     'details': obj.data
                 }, status=201)
-        except:
+        except Artist.DoesNotExist:
             return Response({
                 'status': 'error',
                 'details': 'This user already has an Artist profile.'
