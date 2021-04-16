@@ -150,14 +150,14 @@ class ProductbyArtistListView(ListAPIView):
         return products
 
 
-class ParticularProductView(ListAPIView):
+class ParticularProductView(RetrieveAPIView):
     serializer_class = ParticularProductSerializer
     parser_classes = [FormParser, MultiPartParser, JSONParser]
     lookup_url_kwarg = "pid"
 
-    def get_queryset(self):
+    def get_object(self):
         pid = self.kwargs.get(self.lookup_url_kwarg)
-        product = Product.objects.filter(pid=pid)
+        product = Product.objects.get(pid=pid)
         # Update click count
         product.click_count += 1
         product.save()
