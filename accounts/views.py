@@ -168,3 +168,61 @@ class ArtistListView(ListAPIView):
     serializer_class = ArtistSerializer
     pagination_class = ResultSetPagination
     queryset = Artist.objects.all()
+
+class CashOutRequestView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsArtist]
+    parser_classes = [JSONParser]
+
+    def post(self, request):
+        user = request.user.id
+        try:
+            artist = Artist.objects.get(user=user)
+            if artist.cashout_requested:
+                return Response({
+                    'status': 'success',
+                    'details': 'Already requested cash-out.'
+                }, status=200)
+            else:
+                artist.cashout_requested = True
+                artist.save()
+                return Response({
+                    'status': 'success',
+                    'details': 'Successfully requested cash-out.'
+                }, status=201)
+        except:
+            return Response({
+                'status': 'error',
+                'details': 'Artist error.'
+            }, status=400)
+
+
+class CashOutView(ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, IsKalafexAdmin]
+    parser_classes = [JSONParser]
+    serializer_class = ArtistPersonalSerializer
+    pagination_class = ResultSetPagination
+
+    def get_queryset(self, *args, **kwargs):
+        requested_artists = Artist.objects.filter(cashout_requested=True)
+        return requested_artists
+
+
+class GrantCashOutView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsKalafexAdmin]
+    parser_classes = [JSONParser]
+    
+    def post(self, request):
+        try:
+            artist = Artist.objects.get(user=request.data['user'])
+            artist.cashout_requested = False
+            artist.balance = Decimal('0.00')
+            artist.save()
+            return Response({
+                'status': 'success',
+                'details': 'Cash-out granted.'
+            }, status=201)
+        except Artist.DoesNotExist:
+            return Response({
+                'status': 'error',
+                'details': 'Artist does not exist.'
+            }, status=400)

@@ -10,7 +10,10 @@ from .views import(
     ParticularAddressView,
     AddressListView,
     ParticularArtistView,
-    ArtistListView
+    ArtistListView,
+    CashOutRequestView,
+    CashOutView,
+    GrantCashOutView
 )
 
 urlpatterns = [
@@ -25,4 +28,7 @@ urlpatterns = [
     path('view_addresses/', AddressListView.as_view()),
     path('view_particular_artist/<str:custom_url>/', ParticularArtistView.as_view()),
     path('view_artists/', ArtistListView.as_view()),
+    path('request/cashout/', CashOutRequestView.as_view()),
+    path('view/cashout_requests/', CashOutView.as_view()),
+    path('grant/cashout/', GrantCashOutView.as_view())
 ]

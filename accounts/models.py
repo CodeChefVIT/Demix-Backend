@@ -84,6 +84,8 @@ class Artist(models.Model):
                                         upload_to=image_directory_path,
                                         default='uploads/profile_pictures/default.png',
                                         null=True)
+    cashout_requested = models.BooleanField(default=False)
+
     
     def __str__(self):
         return self.user.full_name
