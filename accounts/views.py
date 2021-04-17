@@ -90,7 +90,7 @@ class AddressCreateView(APIView):
 
     def post(self, request):
         request.data['user'] = request.user.id
-        obj = AddressSerialzier(data=request.data)
+        obj = AddressSerializer(data=request.data)
         if obj.is_valid():
             obj.save()
             return Response({
