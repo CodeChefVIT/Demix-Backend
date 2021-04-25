@@ -22,13 +22,17 @@ class ArtistCreateSerializer(serializers.ModelSerializer):
 
 class ArtistSerializer(serializers.ModelSerializer):
     profile_picture = serializers.SerializerMethodField('_get_image_url')
+    full_name = serializers.SerializerMethodField('_get_artist_name')
     
     def _get_image_url(self, obj):
         return self.context['request'].build_absolute_uri(obj.profile_picture.url)
 
+    def _get_artist_name(self, obj):
+        return obj.user.full_name
+
     class Meta:
         model = Artist
-        fields = ['user', 'bio', 'custom_url', 'profile_picture']
+        fields = ['user', 'bio', 'custom_url', 'profile_picture', 'full_name']
 
 
 class ArtistModifySerializer(serializers.ModelSerializer):
