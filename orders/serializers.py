@@ -17,6 +17,12 @@ class ParticularOrderSerializer(serializers.ModelSerializer):
                   'received', 'refund_requested', 'refund_granted', 'price']
 
 
+class OrderProductCrudSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderProduct
+        fields = '__all__'
+
+
 class OrderProductSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
     

@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.db import IntegrityError
 from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework.views import APIView
@@ -11,6 +12,7 @@ from .pagination import ResultSetPagination
 from .serializers import(
     OrderSerializer,
     OrderProductSerializer,
+    OrderProductCrudSerializer,
     ParticularOrderSerializer,
     PaymentSerializer,
     RefundOrderSerializer,
@@ -117,15 +119,21 @@ class OrderProductCreateView(APIView):
 
     def post(self, request):
         request.data['user'] = request.user.id
-        serializer = OrderProductSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+        serializer = OrderProductCrudSerializer(data=request.data)
+        try:
+            if serializer.is_valid():
+                serializer.save()
+                return Response({
+                    'status': 'success',
+                    'details': serializer.data
+                }, status=201)
+            else:
+                return Response(serializer.errors, status=400)
+        except: # IntegrityError
             return Response({
-                'status': 'success',
-                'details': serializer.data
-            }, status=201)
-        else:
-            return Response(serializer.errors, status=400)
+                'status': 'error',
+                'details': 'Invalid pid.'
+            }, status=400)
 
 
 class OrderProductModifyView(APIView):
@@ -135,7 +143,8 @@ class OrderProductModifyView(APIView):
     def patch(self, request, op_id):
         try:
             obj = OrderProduct.objects.get(op_id=op_id)
-            serializer = OrderProductSerializer(obj, data=request.data, partial=True)
+            serializer = OrderProductCrudSerializer(obj, data=request.data, 
+                                                    partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response({
