@@ -16,6 +16,13 @@ class Category(models.Model):
     def __str__(self):
         return self.name
     
+    def save(self, *args, **kwargs):
+        for product in self.product_set.all():
+            product.kalafex_price = (product.original_price * 
+                                     (100+self.commission) / 100)
+            product.save()
+        super(Category, self).save(*args, **kwargs)
+    
     class Meta:
         verbose_name_plural = 'categories'
 
