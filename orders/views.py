@@ -153,9 +153,9 @@ class OrderProductModifyView(APIView):
                 }, status=201)
             else:
                 return Response(serializer.errors, status=400)
-        except:
+        except OrderProduct.DoesNotExist:
             return Response({
-                'error': 'Order not found.'
+                'error': 'OrderProduct not found.'
             }, status=404)
 
     def delete(self, request, op_id):
