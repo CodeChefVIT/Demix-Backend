@@ -187,8 +187,12 @@ class PaymentCreateView(APIView):
 
     def post(self, request):
         try:
-            obj = Payment.objects.get(order=request.data['order'],
-                                      paid_successfully=False)
+            obj = Payment.objects.get(order=request.data['order'])
+            if obj.paid_successfully:
+                return Response({
+                    'status': 'error',
+                    'details': 'Order already paid for.'
+                }, status=400)
             serializer = PaymentSerializer(obj)
             razorpay_details = client.order.fetch(obj.razorpay_order_id)
             return Response({
@@ -196,32 +200,45 @@ class PaymentCreateView(APIView):
                 'razorpay_details': razorpay_details,
                 'internal_details': serializer.data
             }, status=200)
-        except Payment.DoesNotExist:
-            request.data['user'] = request.user.id
-            #Convert to paise
-            amount = request.data['amount'] * 100
-            data = {
-                'amount': amount,
-                'currency': 'INR',
-                'receipt': request.data['order'],
-                'notes': {
-                    'user_id': request.user.id,
-                    'name': request.user.full_name,
-                    'internal_order_id': request.data['order']
+        except (Payment.DoesNotExist, KeyError):
+            try:
+                request.data['user'] = request.user.id
+                order = Order.objects.get(o_id=request.data['order'])
+                #Convert to paise
+                amount = float(order.get_total) * 100
+                request.data['amount'] = float(order.get_total)
+                data = {
+                    'amount': amount,
+                    'currency': 'INR',
+                    'receipt': request.data['order'],
+                    'notes': {
+                        'user_id': request.user.id,
+                        'name': request.user.full_name,
+                        'internal_order_id': request.data['order']
+                    }
                 }
-            }
-            razorpay_order = client.order.create(data=data)
-            request.data['razorpay_order_id'] = razorpay_order['id']
-            payment_object = PaymentSerializer(data=request.data)
-            if payment_object.is_valid():
-                payment_object.save()
+                razorpay_order = client.order.create(data=data)
+                request.data['razorpay_order_id'] = razorpay_order['id']
+                payment_object = PaymentSerializer(data=request.data)
+                if payment_object.is_valid():
+                    payment_object.save()
+                    return Response({
+                        'status': 'success',
+                        'razorpay_details': razorpay_order,
+                        'internal_details': payment_object.data
+                    }, status=201)
+                else:
+                    return Response(payment_object.errors, status=400)
+            except (Order.DoesNotExist, KeyError):
                 return Response({
-                    'status': 'success',
-                    'razorpay_details': razorpay_order,
-                    'internal_details': payment_object.data
-                }, status=201)
-            else:
-                return Response(payment_object.errors, status=400)
+                    'status': 'error',
+                    'details': 'Error creating payment.'
+                }, status=400)
+            except:
+                return Response({
+                    'status': 'error',
+                    'details': 'Ensure amount is above INR 1.00.'
+                }, status=400)
 
 
 class PaymentVerifyView(APIView):
