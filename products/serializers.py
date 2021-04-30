@@ -24,8 +24,9 @@ class ProductSerializer(serializers.ModelSerializer):
     artist = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), default=serializers.CurrentUserDefault())
     class Meta:
         model = Product
-        fields = ['pid', 'name', 'artist', 'description', 'category', 'subcategory',
-                  'original_price', 'kalafex_price', 'display_image', 'discount_price']
+        fields = ['pid', 'name', 'artist', 'description', 'category',
+                  'subcategory', 'original_price', 'kalafex_price',
+                  'display_image', 'discount_price', 'stock_left']
         read_only_fields = ['kalafex_price']
 
     def create(self, validated_data):
