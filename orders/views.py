@@ -100,7 +100,7 @@ class OrderListView(ListAPIView):
         return order
 
 
-class PreviousOrdersListView(ListAPIView):
+class CurrentAndPreviousOrdersListView(ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [JSONParser]
     serializer_class = OrderSerializer
@@ -108,8 +108,9 @@ class PreviousOrdersListView(ListAPIView):
 
     def get_queryset(self, *args, **kwargs):
         user = self.request.user
-        order = Order.objects.filter(user=user,
-                                     payment__paid_successfully=True)
+        order = Order.objects.filter(
+            user=user,
+            payment__paid_successfully=True).order_by('-start_date')
         return order
 
 
