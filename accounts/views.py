@@ -176,8 +176,9 @@ class AddressUpdateDeleteView(RetrieveUpdateDestroyAPIView):
     lookup_field = 'a_id'
 
     def get_queryset(self, *args, **kwargs):
+        user = self.request.user
         a_id = self.kwargs.get(self.lookup_field)
-        address = Address.objects.filter(a_id=a_id)
+        address = Address.objects.filter(user=user, a_id=a_id)
         return address
 
 
