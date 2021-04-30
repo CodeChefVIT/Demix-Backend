@@ -171,9 +171,10 @@ class ParticularProductModifyView(RetrieveUpdateDestroyAPIView):
     pagination_class = ResultSetPagination
     lookup_url_kwarg = "pid"
 
-    def get_queryset(self):
+    def get_queryset(self, *args, **kwargs):
+        user = self.request.user
         pid = self.kwargs.get(self.lookup_url_kwarg)
-        product = Product.objects.filter(pid=pid)
+        product = Product.objects.filter(artist=user, pid=pid)
         return product
 
 
