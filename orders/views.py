@@ -214,6 +214,8 @@ class PaymentCreateView(APIView):
                     'notes': {
                         'user_id': request.user.id,
                         'name': request.user.full_name,
+                        'email': request.user.email,
+                        'phone_number': request.user.phone_number,
                         'internal_order_id': request.data['order']
                     }
                 }
