@@ -234,10 +234,10 @@ class PaymentCreateView(APIView):
                     'status': 'error',
                     'details': 'Error creating payment.'
                 }, status=400)
-            except:
+            except Exception as e:
                 return Response({
                     'status': 'error',
-                    'details': 'Ensure amount is above INR 1.00.'
+                    'details': str(e)
                 }, status=400)
 
 
