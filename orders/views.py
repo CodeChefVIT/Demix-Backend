@@ -24,7 +24,7 @@ import razorpay
 
 # Create your views here.
 
-client = razorpay.Client(auth=("rzp_test_lVBKYGGW6umcct", "syQEJEUbw0vZyTnKfZ8ApVqJ"))
+client = razorpay.Client(auth=("rzp_test_Di6RK8bVcakkJ7", "zcJL9J8i36xui0U1ZmdLyIc6"))
 
 
 class OrderCreateView(APIView):
