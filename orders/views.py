@@ -291,7 +291,7 @@ class PaymentVerifyView(APIView):
                 return Response(status=400)
 
             if request.data.get('event') == "payment.authorized":    
-                if authorize(request):
+                if self.authorize(request):
                     return Response(status=200)
                 else:
                     return Response(status=400)
