@@ -256,7 +256,7 @@ class PaymentVerifyView(APIView):
     # without any parsing or so in the middle.
 
     def authorize(self, request):
-        ro_id = request.data['payload']['payment']['entity']['order_id']
+        ro_id = request.data['payload']['payment']['entity']['notes']['internal_order_id']
         obj = Payment.objects.get(razorpay_order_id=ro_id)
         obj.paid_successfully = True
         obj.save()
