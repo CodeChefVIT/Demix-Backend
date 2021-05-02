@@ -255,25 +255,49 @@ class PaymentVerifyView(APIView):
     # We don't use parsers for the Razorpay webhook. The data is meant to be processed raw,
     # without any parsing or so in the middle.
 
-    def get(self, request):
-        if request.data['razorpay_payment_id']:
+    def authorize(self, request):
+        ro_id = request.data['payload']['payment']['entity']['order_id']
+        obj = Payment.objects.get(razorpay_order_id=ro_id)
+        obj.paid_successfully = True
+        obj.save()
+        order = Order.objects.get(o_id=obj.order)
+        for order_product in order.order_products.all():
+            order_product.product.purchase_count += order_product.quantity
+            order_product.product.stock_left -= order_product.quantity
+            order_product.artist.balance += (
+                order_product.quantity * order_product.product.original_price
+            )
+            order_product.ordered = True
+            order_product.save()
+        order.being_delivered = True
+        order.ordered_date = now()
+        try:
+            order.save()
+            return True
+        except:
+            return False
+
+
+    def post(self, request):
+        if request.headers.get('X-Razorpay-Signature') is not None:
             try:
                 webhook_signature = request.headers.get('X-Razorpay-Signature')
-                result = client.utility.verify_webhook_signature(request.data, # pass raw data
-                                                                 webhook_signature,
-                                                                 webhook_secret) #set secret up
-                obj = Payment.objects.get(razorpay_order_id=request.data['razorpay_order_id'])
-                obj.paid_successfully = True
-                obj.save()
-                order = Order.objects.get(o_id=obj.order)
-                for order_product in order.order_products.all():
-                    order_product.product.purchase_count += order_product.quantity
-                    order_product.artist.balance += (
-                        order_product.quantity * order_product.product.original_price
-                    )
-                    order_product.save()
-            except:
-                pass
+                result = client.utility.verify_webhook_signature(
+                    json.dumps(request.data, separators=(',', ':')), # pass raw data
+                    webhook_signature,
+                    webhook_secret #set secret up
+                )
+            except Exception as e:
+                return Response(status=400)
+
+            if request.data.get('event') == "payment.authorized":    
+                if authorize(request):
+                    return Response(status=200)
+                else:
+                    return Response(status=400)
+    
+        return Response(status=200)
+            
 
 
 class RequestRefundView(APIView):
