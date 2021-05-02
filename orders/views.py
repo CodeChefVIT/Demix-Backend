@@ -259,12 +259,11 @@ class PaymentVerifyView(APIView):
         ro_id = request.data['payload']['payment']['entity']['order_id']
         obj = Payment.objects.get(razorpay_order_id=ro_id)
         obj.paid_successfully = True
-        obj.save()
         order = Order.objects.get(o_id=obj.order.o_id)
         for order_product in order.order_products.all():
             order_product.product.purchase_count += order_product.quantity
             order_product.product.stock_left -= order_product.quantity
-            order_product.artist.balance += (
+            order_product.product.artist.balance += (
                 order_product.quantity * order_product.product.original_price
             )
             order_product.ordered = True
@@ -272,6 +271,7 @@ class PaymentVerifyView(APIView):
         order.being_delivered = True
         order.ordered_date = now()
         try:
+            obj.save()
             order.save()
             return True
         except:
