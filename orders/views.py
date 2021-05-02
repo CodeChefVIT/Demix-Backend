@@ -383,6 +383,7 @@ class GrantRefundView(APIView):
 
 
 class DailyOrderView(PandasView):
+    permission_classes = [permissions.IsAuthenticated, IsKalafexAdmin]
     serializer_class = OrderProductExportSerializer
     renderer_classes = [PandasExcelRenderer]
 
