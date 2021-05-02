@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.db import IntegrityError
+from django.conf import settings
 from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework.views import APIView
@@ -7,20 +8,26 @@ from accounts.permissions import IsArtist, IsKalafexAdmin
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.parsers import JSONParser
+from rest_pandas import PandasView, PandasExcelRenderer
 from .models import Order, OrderProduct, Payment, Refund
 from .pagination import ResultSetPagination
 from .serializers import(
     OrderSerializer,
     OrderProductSerializer,
     OrderProductCrudSerializer,
+    OrderProductExportSerializer,
     ParticularOrderSerializer,
     PaymentSerializer,
     RefundOrderSerializer,
     RefundSerializer
 )
 from accounts.permissions import IsKalafexAdmin
+from accounts.models import Address
 
 import razorpay
+import json
+import datetime
+from django.utils.timezone import make_aware, now
 
 # Create your views here.
 
@@ -342,3 +349,19 @@ class GrantRefundView(APIView):
                 'status': 'error',
                 'detail': 'Refund has not been requested for this order.'
             }, status=400)
+
+
+class DailyOrderView(PandasView):
+    serializer_class = OrderProductExportSerializer
+    renderer_classes = [PandasExcelRenderer]
+
+    def get_queryset(self):
+        today = datetime.datetime.today()
+        aware_today = make_aware(today)
+        orders = list(Order.objects.values_list('o_id', flat=True).filter(ordered_date__lt=aware_today))
+        order_products = OrderProduct.objects.filter(order__in=[order.urn for order in orders])
+        return order_products
+
+    def get_pandas_filename(self, request, format):
+        today = datetime.datetime.today().strftime("%Y-%m-%d")
+        return f"{today}-orders"

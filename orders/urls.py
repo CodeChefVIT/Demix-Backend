@@ -12,7 +12,8 @@ from .views import (
     PaymentVerifyView,
     RequestRefundView,
     RefundRequestsView,
-    GrantRefundView
+    GrantRefundView,
+    DailyOrderView
 )
 
 urlpatterns = [
@@ -29,4 +30,5 @@ urlpatterns = [
     path('request_refund/', RequestRefundView.as_view()),
     path('view/refund_requests/', RefundRequestsView.as_view()),
     path('grant/refund/', GrantRefundView.as_view()),
+    path('download/', DailyOrderView.as_view())
 ]
