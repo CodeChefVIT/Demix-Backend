@@ -285,7 +285,7 @@ class PaymentVerifyView(APIView):
                 result = client.utility.verify_webhook_signature(
                     json.dumps(request.data, separators=(',', ':')), # pass raw data
                     webhook_signature,
-                    webhook_secret #set secret up
+                    "123456testsecret" #set secret up
                 )
             except Exception as e:
                 return Response(status=400)
