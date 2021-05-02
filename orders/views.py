@@ -260,7 +260,7 @@ class PaymentVerifyView(APIView):
         obj = Payment.objects.get(razorpay_order_id=ro_id)
         obj.paid_successfully = True
         obj.save()
-        order = Order.objects.get(o_id=obj.order)
+        order = Order.objects.get(o_id=obj.order.o_id)
         for order_product in order.order_products.all():
             order_product.product.purchase_count += order_product.quantity
             order_product.product.stock_left -= order_product.quantity
