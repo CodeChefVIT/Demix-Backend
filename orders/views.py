@@ -23,6 +23,7 @@ from .serializers import(
 )
 from accounts.permissions import IsKalafexAdmin
 from accounts.models import Address, Artist
+from products.models import Product
 
 import razorpay
 import json
@@ -262,14 +263,16 @@ class PaymentVerifyView(APIView):
         order = Order.objects.get(o_id=obj.order.o_id)
         order_products = OrderProduct.objects.filter(order=order.o_id)
         for order_product in order_products:
-            order_product.product.purchase_count += order_product.quantity
-            order_product.product.stock_left -= order_product.quantity
-            user = order_product.product.artist
+            product = Product.objects.get(pid=order_product.product.pid)
+            product.purchase_count += order_product.quantity
+            product.stock_left -= order_product.quantity
+            user = product.artist
             artist = Artist.objects.get(user=user)
             artist.balance += (
-                order_product.quantity * order_product.product.original_price
+                order_product.quantity * product.original_price
             )
             order_product.ordered = True
+            product.save()
             order_product.save()
             artist.save()
         order.being_delivered = True
