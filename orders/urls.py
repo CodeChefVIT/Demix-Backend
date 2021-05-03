@@ -13,7 +13,9 @@ from .views import (
     RequestRefundView,
     RefundRequestsView,
     GrantRefundView,
-    DailyOrderView
+    DailyOrderView,
+    PendingOrdersView,
+    DeliveryStatusUpdateView
 )
 
 urlpatterns = [
@@ -30,5 +32,7 @@ urlpatterns = [
     path('request_refund/', RequestRefundView.as_view()),
     path('view/refund_requests/', RefundRequestsView.as_view()),
     path('grant/refund/', GrantRefundView.as_view()),
+    path('view/orders/pending/', PendingOrdersView.as_view()),
+    path('set_delivery_status/', DeliveryStatusUpdateView.as_view()),
     path('download/', DailyOrderView.as_view())
 ]

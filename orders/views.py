@@ -19,7 +19,8 @@ from .serializers import(
     ParticularOrderSerializer,
     PaymentSerializer,
     RefundOrderSerializer,
-    RefundSerializer
+    RefundSerializer,
+    OrderDeliverySerializer
 )
 from accounts.permissions import IsKalafexAdmin
 from accounts.models import Address, Artist
@@ -394,6 +395,40 @@ class GrantRefundView(APIView):
             return Response({
                 'status': 'error',
                 'detail': 'Refund has not been requested for this order.'
+            }, status=400)
+
+
+class PendingOrdersView(ListAPIView):
+    # Delivery-pending orders.
+    permission_classes = [permissions.IsAuthenticated, IsKalafexAdmin]
+    parser_classes = [JSONParser]
+    serializer_class = OrderDeliverySerializer
+    pagination_class = ResultSetPagination
+
+    def get_queryset(self, *args, **kwargs):
+        pending_orders = Order.objects.filter(being_delivered=True,
+                                              received=False)
+        return pending_orders
+
+
+class DeliveryStatusUpdateView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsKalafexAdmin]
+    parser_classes = [JSONParser]
+    serializer_class = OrderDeliverySerializer
+
+    def post(self, request):
+        try:
+            order = Order.objects.get(o_id=request.data['order'])
+            order.received = True
+            order.save()
+            return Response({
+                'status': "success",
+                'details': "Successfully updated status to 'received'."
+            }, status=200)
+        except:
+            return Response({
+                'status': 'error',
+                'detail': 'Could not update status.'
             }, status=400)
 
 

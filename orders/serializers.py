@@ -118,3 +118,10 @@ class RefundOrderSerializer(serializers.ModelSerializer):
         fields = ['o_id', 'user', 'refund_requested', 'refund_granted',
                   'payment', 'refund']
 
+
+class OrderDeliverySerializer(serializers.ModelSerializer):
+    payment = PaymentSerializer(read_only=True)
+
+    class Meta:
+        model = Order
+        fields = ['o_id', 'user', 'being_delivered', 'received', 'payment']
