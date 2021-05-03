@@ -112,11 +112,20 @@ class OrderProductExportSerializer(serializers.ModelSerializer):
 class RefundOrderSerializer(serializers.ModelSerializer):
     payment = PaymentSerializer(read_only=True)
     refund = RefundSerializer(read_only=True)
+    shipping_address = serializers.SerializerMethodField('_get_shipping_address')
+
+    def _get_shipping_address(self, obj):
+        address_list = [
+            str(obj.shipping_address.street), str(obj.shipping_address.city),
+            str(obj.shipping_address.state), str(obj.shipping_address.pin_code)
+        ]
+        address_string = ", ".join(address_list)
+        return address_string
     
     class Meta:
         model = Order
         fields = ['o_id', 'user', 'refund_requested', 'refund_granted',
-                  'payment', 'refund']
+                  'payment', 'refund', 'shipping_address']
 
 
 class OrderDeliverySerializer(serializers.ModelSerializer):
