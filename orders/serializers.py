@@ -77,11 +77,15 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class OrderProductExportSerializer(serializers.ModelSerializer):
     o_id = serializers.SerializerMethodField('_get_o_id')
+    name = serializers.SerializerMethodField('_get_product_name')
     shipping_address = serializers.SerializerMethodField('_get_shipping_address')
     pickup_address = serializers.SerializerMethodField('_get_pickup_address')
 
     def _get_o_id(self, obj):
         return obj.order.o_id
+
+    def _get_product_name(self, obj):
+        return obj.product.name
     
     def _get_shipping_address(self, obj):
         address_list = [
@@ -100,7 +104,7 @@ class OrderProductExportSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderProduct
-        fields = ['o_id', 'shipping_address', 'pickup_address']
+        fields = ['o_id', 'name', 'shipping_address', 'pickup_address', 'quantity']
 
 
 class RefundOrderSerializer(serializers.ModelSerializer):

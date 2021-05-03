@@ -17,6 +17,7 @@ django-storages==1.11.1
 django-templated-mail==1.1.1
 djangorestframework==3.12.2
 djoser==2.1.0
+et-xmlfile==1.1.0
 gunicorn==20.0.4
 idna==2.10
 importlib-metadata==1.7.0
@@ -26,6 +27,7 @@ jmespath==0.10.0
 MarkupSafe==1.1.1
 numpy==1.20.2
 oauthlib==3.1.0
+openpyxl==3.0.7
 pandas==1.2.4
 Pillow==8.1.0
 psycopg2==2.8.6
