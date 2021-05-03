@@ -73,6 +73,8 @@ class OrderSerializer(serializers.ModelSerializer):
                   'coupon', 'start_date', 'ordered_date', 'being_delivered',
                   'received', 'refund_requested', 'refund_granted',
                   'orderproduct_set', 'price', 'payment', 'refund']
+        read_only_fields = ['being_delivered', 'received',
+                            'refund_requested', 'refund_granted']
 
 
 class OrderProductExportSerializer(serializers.ModelSerializer):

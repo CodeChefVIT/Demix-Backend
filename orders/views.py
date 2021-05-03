@@ -58,7 +58,8 @@ class OrderModifyView(APIView):
 
     def patch(self, request, o_id):
         try:
-            obj = Order.objects.get(o_id=o_id)
+            user = request.user.id
+            obj = Order.objects.get(o_id=o_id, user=user)
             serializer = OrderSerializer(obj, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
@@ -75,13 +76,16 @@ class OrderModifyView(APIView):
 
     def delete(self, request, o_id):
         try:
-            serializer = Order.objects.get(o_id=o_id)
+            user = request.user.id
+            serializer = Order.objects.get(o_id=o_id, user=user)
             serializer.delete()
             return Response({
                 'status': 'deleted'
             }, status=200)
         except:
-            return Response(status=400)
+            return Response({
+                'error': 'Order not found.'
+            }, status=404)
 
 
 class ParticularOrderView(ListAPIView):
@@ -151,9 +155,16 @@ class OrderProductModifyView(APIView):
 
     def patch(self, request, op_id):
         try:
-            obj = OrderProduct.objects.get(op_id=op_id)
+            user = request.user.id
+            obj = OrderProduct.objects.get(op_id=op_id, user=user)
             serializer = OrderProductCrudSerializer(obj, data=request.data, 
                                                     partial=True)
+            if request.data['order']:
+                if not Order.objects.filter(user=user, o_id=request.data['order']).exists():
+                    return Response({
+                        'status': 'error',
+                        'details': 'Unauthorized to add to the given order.'
+                    }, status=400)
             if serializer.is_valid():
                 serializer.save()
                 return Response({
@@ -169,13 +180,17 @@ class OrderProductModifyView(APIView):
 
     def delete(self, request, op_id):
         try:
-            obj = OrderProduct.objects.get(op_id=op_id)
+            user = request.user.id
+            obj = OrderProduct.objects.get(op_id=op_id, user=user)
             obj.delete()
             return Response({
                 'status': 'deleted'
             }, status=200)
         except:
-            return Response(status=400)
+            return Response({
+                'status': 'error',
+                'details': 'Unauthorized.'
+            }, status=400)
 
 
 class CartView(ListAPIView):
