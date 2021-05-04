@@ -134,3 +134,11 @@ class OrderDeliverySerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['o_id', 'user', 'being_delivered', 'received', 'payment']
+
+
+class ArtistOrderProductSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+
+    class Meta:
+        model = OrderProduct
+        fields = ['op_id', 'product', 'quantity', 'handed_over']

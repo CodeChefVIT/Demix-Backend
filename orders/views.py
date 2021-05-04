@@ -4,7 +4,7 @@ from django.conf import settings
 from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework.views import APIView
-from accounts.permissions import IsArtist, IsKalafexAdmin
+from accounts.permissions import IsArtist, IsKalafexAdmin, IsArtist
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.parsers import JSONParser
@@ -20,7 +20,8 @@ from .serializers import(
     PaymentSerializer,
     RefundOrderSerializer,
     RefundSerializer,
-    OrderDeliverySerializer
+    OrderDeliverySerializer,
+    ArtistOrderProductSerializer
 )
 from accounts.permissions import IsKalafexAdmin
 from accounts.models import Address, Artist
@@ -321,6 +322,39 @@ class PaymentVerifyView(APIView):
     
         return Response(status=200)
             
+
+class ArtistOrderProductView(ListAPIView):
+    permission_classes = [permissions.IsAuthenticated, IsArtist]
+    parser_classes = [JSONParser]
+    serializer_class = ArtistOrderProductSerializer
+    pagination_class = ResultSetPagination
+
+    def get_queryset(self, *arga, **kwargs):
+        user = self.request.user.id
+        order_products = OrderProduct.objects.filter(order__being_delivered=True,
+                                                     order__received=False, handed_over=False)
+        return order_products
+
+
+class ArtistHandOverView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsArtist]
+    parser_classes = [JSONParser]
+    serializer_class = ArtistOrderProductSerializer
+
+    def post(self, request):
+        try:
+            order_product = OrderProduct.objects.get(op_id=request.data['order_product'])
+            order_product.handed_over = True
+            order_product.save()
+            return Response({
+                'status': "success",
+                'details': "Successfully stored as handed over."
+            }, status=200)
+        except:
+            return Response({
+                'status': 'error',
+                'detail': 'Could not update status.'
+            }, status=400)
 
 
 class RequestRefundView(APIView):
