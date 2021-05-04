@@ -16,7 +16,6 @@ from .serializers import(
     OrderProductSerializer,
     OrderProductCrudSerializer,
     OrderProductExportSerializer,
-    ParticularOrderSerializer,
     PaymentSerializer,
     RefundOrderSerializer,
     RefundSerializer,

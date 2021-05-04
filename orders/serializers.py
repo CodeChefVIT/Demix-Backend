@@ -4,20 +4,6 @@ from products.serializers import ProductSerializer
 from accounts.models import Address
 
 
-class ParticularOrderSerializer(serializers.ModelSerializer):
-    price = serializers.SerializerMethodField('_get_order_price')
-
-    def _get_order_price(self, obj):
-        price = obj.get_total()
-        return price
-
-    class Meta:
-        model = Order
-        fields = ['o_id', 'user', 'products', 'shipping_address', 'billing_address', 
-                  'coupon', 'start_date', 'ordered_date', 'being_delivered',
-                  'received', 'refund_requested', 'refund_granted', 'price']
-
-
 class OrderProductCrudSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderProduct
