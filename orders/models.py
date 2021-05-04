@@ -32,6 +32,7 @@ class Order(models.Model):
 
     refund_requested = models.BooleanField(default=False)
     refund_granted = models.BooleanField(default=False)
+    refund_rejected = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.user.full_name}'s order - {self.o_id} at {self.start_date.strftime('%d-%m-%Y')}"
