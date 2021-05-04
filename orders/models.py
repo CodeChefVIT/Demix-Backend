@@ -45,6 +45,9 @@ class Order(models.Model):
             total  -= self.coupon.price
         return total
 
+    class Meta:
+        ordering = ['-start_date']
+
 
 class OrderProduct(models.Model):
     op_id = models.UUIDField(default=uuid.uuid4, primary_key=True)
