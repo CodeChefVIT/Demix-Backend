@@ -58,7 +58,7 @@ class RefundSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    orderproduct_set = OrderProductSerializer(many=True, read_only=True)
+    orderproduct_set = serializers.SerializerMethodField('_get_order_products')
     price = serializers.SerializerMethodField('_get_order_price')
     payment = PaymentSerializer(read_only=True)
     refund = RefundSerializer(read_only=True)
@@ -66,6 +66,11 @@ class OrderSerializer(serializers.ModelSerializer):
     def _get_order_price(self, obj):
         price = obj.get_total
         return price
+
+    def _get_order_products(self, obj):
+        order_products = OrderProduct.objects.filter(order=obj.o_id)
+        serializer = OrderProductSerializer(order_products, many=True)
+        return serializer.data
 
     class Meta:
         model = Order
