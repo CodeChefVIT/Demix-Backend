@@ -104,6 +104,7 @@ class Refund(models.Model):
     order = models.OneToOneField(Order, on_delete=models.CASCADE)
     reasons = models.TextField()
     accepted = models.BooleanField(default=False)
+    reject_reasons = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return str(self.order.o_id)
