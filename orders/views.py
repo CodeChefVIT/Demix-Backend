@@ -172,14 +172,23 @@ class OrderProductModifyView(APIView):
         try:
             user = request.user.id
             obj = OrderProduct.objects.get(op_id=op_id, user=user)
-            serializer = OrderProductCrudSerializer(obj, data=request.data, 
-                                                    partial=True)
+
             if 'order' in request.data.keys():
                 if not Order.objects.filter(user=user, o_id=request.data['order']).exists():
                     return Response({
                         'status': 'error',
                         'details': 'Unauthorized to add to the given order.'
                     }, status=400)
+                    
+            product = Product.objects.get(pid=obj.product.pid)
+            if product.stock_left < int(request.data['quantity']):
+                return Response({
+                    'status': 'error',
+                    'details': 'Not enough stock.'
+                }, status=400)
+            
+            serializer = OrderProductCrudSerializer(obj, data=request.data, 
+                                                    partial=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response({
