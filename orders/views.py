@@ -333,10 +333,14 @@ class ArtistOrderProductView(ListAPIView):
     serializer_class = ArtistOrderProductSerializer
     pagination_class = ResultSetPagination
 
-    def get_queryset(self, *arga, **kwargs):
+    def get_queryset(self, *args, **kwargs):
         user = self.request.user.id
-        order_products = OrderProduct.objects.filter(order__being_delivered=True,
-                                                     order__received=False, handed_over=False)
+        order_products = OrderProduct.objects.filter(
+            order__being_delivered=True,
+            order__received=False,
+            handed_over=False,
+            product__artist=user
+        )
         return order_products
 
 
