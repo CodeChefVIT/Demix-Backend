@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.db import IntegrityError
+from django.core.exceptions import ValidationError
 from django.conf import settings
 from rest_framework.response import Response
 from rest_framework import permissions
@@ -160,7 +161,7 @@ class OrderProductModifyView(APIView):
             obj = OrderProduct.objects.get(op_id=op_id, user=user)
             serializer = OrderProductCrudSerializer(obj, data=request.data, 
                                                     partial=True)
-            if request.data['order']:
+            if 'order' in request.data.keys():
                 if not Order.objects.filter(user=user, o_id=request.data['order']).exists():
                     return Response({
                         'status': 'error',
@@ -177,6 +178,10 @@ class OrderProductModifyView(APIView):
         except OrderProduct.DoesNotExist:
             return Response({
                 'error': 'OrderProduct not found.'
+            }, status=404)
+        except ValidationError:
+            return Response({
+                'error': 'Enter valid ID.'
             }, status=404)
 
     def delete(self, request, op_id):
