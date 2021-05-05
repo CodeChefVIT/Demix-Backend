@@ -134,8 +134,15 @@ class OrderProductCreateView(APIView):
 
     def post(self, request):
         request.data['user'] = request.user.id
-        serializer = OrderProductCrudSerializer(data=request.data)
+        user = request.data['user']
         try:
+            pid = request.data['product']
+            if OrderProduct.objects.filter(product=pid, ordered=False, user=user).exists():
+                return Response({
+                    'status': 'error',
+                    'details': 'Product already added to cart.'
+                }, status=400)
+            serializer = OrderProductCrudSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
                 return Response({
