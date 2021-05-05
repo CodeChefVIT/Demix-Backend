@@ -182,7 +182,8 @@ class ProductSearchView(ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filter_backends = [SearchFilter]
-    search_fields = ['name', 'description']
+    search_fields = ['name', 'description', 'category__name',
+                     'category__description']
     parser_classes = [FormParser, MultiPartParser, JSONParser]
     pagination_class = ResultSetPagination
     
