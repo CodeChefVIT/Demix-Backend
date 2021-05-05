@@ -142,6 +142,12 @@ class OrderProductCreateView(APIView):
                     'status': 'error',
                     'details': 'Product already added to cart.'
                 }, status=400)
+            product = Product.objects.get(pid=pid)
+            if product.stock_left < int(request.data['quantity']):
+                return Response({
+                    'status': 'error',
+                    'details': 'Not enough stock.'
+                }, status=400)
             serializer = OrderProductCrudSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.save()
