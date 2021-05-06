@@ -21,7 +21,7 @@ from .serializers import(
     RefundOrderSerializer,
     RefundSerializer,
     OrderDeliverySerializer,
-    ArtistOrderProductSerializer
+    OrderProductHandOverSerializer
 )
 from accounts.permissions import IsKalafexAdmin
 from accounts.models import Address, Artist
@@ -352,7 +352,7 @@ class PaymentVerifyView(APIView):
 class ArtistOrderProductView(ListAPIView):
     permission_classes = [permissions.IsAuthenticated, IsArtist]
     parser_classes = [JSONParser]
-    serializer_class = ArtistOrderProductSerializer
+    serializer_class = OrderProductHandOverSerializer
     pagination_class = ResultSetPagination
 
     def get_queryset(self, *args, **kwargs):
@@ -366,10 +366,10 @@ class ArtistOrderProductView(ListAPIView):
         return order_products
 
 
-class ArtistHandOverView(APIView):
-    permission_classes = [permissions.IsAuthenticated, IsArtist]
+class OrderProductHandOverView(APIView):
+    permission_classes = [permissions.IsAuthenticated, IsKalafexAdmin]
     parser_classes = [JSONParser]
-    serializer_class = ArtistOrderProductSerializer
+    serializer_class = OrderProductHandOverSerializer
 
     def post(self, request):
         try:

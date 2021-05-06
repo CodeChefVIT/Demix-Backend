@@ -127,7 +127,7 @@ class OrderDeliverySerializer(serializers.ModelSerializer):
         fields = ['o_id', 'user', 'being_delivered', 'received', 'payment']
 
 
-class ArtistOrderProductSerializer(serializers.ModelSerializer):
+class OrderProductHandOverSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
 
     class Meta:
