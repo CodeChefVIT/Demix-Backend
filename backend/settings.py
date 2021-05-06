@@ -25,14 +25,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
 # Djoser mailing settings
-DOMAIN = 'beta.kalafex.com'
 SITE_NAME = 'Kalafex'
 PROTOCOL = 'https'
 
-ALLOWED_HOSTS = []
+if DEBUG:
+    DOMAIN = 'beta.kalafex.com'
+    ALLOWED_HOSTS = []
+else:
+    DOMAIN = 'kalafex.com'
+    ALLOWED_HOSTS = [
+        'api.kalafex.com'
+    ]
 
 
 # Application definition
@@ -67,7 +73,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'backend.urls'
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOWED_ORIGINS = [
+    "https://kalafex.com",
+    "https://beta.kalafex.com",
+    "http://localhost:8080",
+    "http://127.0.0.1:8000"
+]
 CORS_ALLOW_CREDENTIALS = True
 ALLOWED_HOSTS = []
 
@@ -189,5 +200,6 @@ RAZORPAY_WEBHOOK_SECRET = os.environ.get('RAZORPAY_WEBHOOK_SECRET')
 #MEDIA_URL = '/media/'
 #MEDIA_ROOT = BASE_DIR / '/media/'
 
-# Activate Django-Heroku.
-django_heroku.settings(locals())
+if DEBUG:
+    # Activate Django-Heroku.
+    django_heroku.settings(locals())
