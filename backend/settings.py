@@ -37,7 +37,7 @@ PROTOCOL = 'https'
 
 if DEBUG:
     DOMAIN = 'beta.kalafex.com'
-    ALLOWED_HOSTS = []
+    ALLOWED_HOSTS = ['*']
 else:
     DOMAIN = 'kalafex.com'
     CURRENT_HOST = os.environ.get('CURRENT_HOST')
