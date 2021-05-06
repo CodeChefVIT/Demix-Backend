@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'q(12une442^q-h(i-qn7mn0ekv55hy2^5x)i(7p*0fo$$k6dpn'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -104,9 +104,9 @@ DATABASES = {
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.zoho.in'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'noreply@kalafex.com'
-DEFAULT_FROM_EMAIL = 'noreply@kalafex.com'
-EMAIL_HOST_PASSWORD = 'kalaFex@123'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 
 REST_FRAMEWORK = {
@@ -121,13 +121,11 @@ DJOSER = {
     'ACTIVATION_URL': 'activate/{uid}/{token}',
     'SEND_ACTIVATION_EMAIL': True,
     'SEND_CONFIRMATION_EMAIL': True,
-    #'SERIALIZERS': {
-    #    'activation': 'accounts.serializers.UserCreateSerializer'
-    #},
     'EMAIL': {
             'activation': 'accounts.email.ActivationEmail'
     }
 }
+
 # Custom User Model
 AUTH_USER_MODEL = 'accounts.User'
 
@@ -164,9 +162,9 @@ USE_L10N = True
 USE_TZ = True
 
 # AWS
-AWS_ACCESS_KEY_ID = 'AKIAR2UOYD2SUDACUPUK'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'kalafex-media'
+AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
 AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
 AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
@@ -177,6 +175,11 @@ STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
 MEDIA_LOCATION = 'media'
 DEFAULT_FILE_STORAGE = 'backend.storage_backends.MediaStorage'
 MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{MEDIA_LOCATION}/'
+
+# Razorpay
+RAZORPAY_KEY = os.environ.get('RAZORPAY_KEY')
+RAZORPAY_SECRET = os.environ.get('RAZORPAY_SECRET')
+RAZORPAY_WEBHOOK_SECRET = os.environ.get('RAZORPAY_WEBHOOK_SECRET')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/

@@ -34,7 +34,7 @@ from django.utils.timezone import make_aware, now
 
 # Create your views here.
 
-client = razorpay.Client(auth=("rzp_test_Di6RK8bVcakkJ7", "zcJL9J8i36xui0U1ZmdLyIc6"))
+client = razorpay.Client(auth=(settings.RAZORPAY_KEY, settings.RAZORPAY_SECRET))
 
 
 class OrderCreateView(APIView):
