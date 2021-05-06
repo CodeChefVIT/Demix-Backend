@@ -40,9 +40,10 @@ if DEBUG:
     ALLOWED_HOSTS = []
 else:
     DOMAIN = 'kalafex.com'
+    CURRENT_HOST = os.environ.get('CURRENT_HOST')
     ALLOWED_HOSTS = [
         'api.kalafex.com'
-    ]
+    ] + [CURRENT_HOST]
 
 
 # Application definition
