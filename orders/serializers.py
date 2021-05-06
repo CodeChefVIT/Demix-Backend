@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Order, OrderProduct, Payment, Refund
-from products.serializers import ProductSerializer
+from products.serializers import ProductSerializer, ProductWithArtistSerializer
 from accounts.models import Address
 
 
@@ -119,12 +119,26 @@ class RefundOrderSerializer(serializers.ModelSerializer):
                   'payment', 'refund', 'shipping_address']
 
 
+class OrderProductDeliverySerializer(serializers.ModelSerializer):
+    product = ProductWithArtistSerializer(read_only=True)
+    
+    class Meta:
+        model = OrderProduct
+        fields = '__all__'
+
+
 class OrderDeliverySerializer(serializers.ModelSerializer):
     payment = PaymentSerializer(read_only=True)
+    orderproduct_set = serializers.SerializerMethodField('_get_order_products')
+
+    def _get_order_products(self, obj):
+        order_products = OrderProduct.objects.filter(order=obj.o_id)
+        serializer = OrderProductDeliverySerializer(order_products, many=True)
+        return serializer.data
 
     class Meta:
         model = Order
-        fields = ['o_id', 'user', 'being_delivered', 'received', 'payment']
+        fields = ['o_id', 'user', 'being_delivered', 'received', 'payment', 'orderproduct_set']
 
 
 class OrderProductHandOverSerializer(serializers.ModelSerializer):

@@ -3,6 +3,7 @@ from .models import Category, SubCategory, Product, ProductImage
 from accounts.models import Artist
 from accounts.serializers import ArtistSerializer
 from django.contrib.auth import get_user_model
+from djoser.serializers import UserSerializer
 
 
 User = get_user_model()
@@ -79,3 +80,16 @@ class ProductImageCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
         fields = '__all__'
+
+
+class ProductWithArtistSerializer(serializers.ModelSerializer):
+    artist = serializers.SerializerMethodField('_get_artist_details')
+
+    def _get_artist_details(self, obj):
+        artist = User.objects.get(id=obj.artist.id)
+        serializer = UserSerializer(artist)
+        return serializer.data
+
+    class Meta:
+        model = Product
+        fields = ['pid', 'name', 'artist', 'display_image']
