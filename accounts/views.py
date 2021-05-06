@@ -207,6 +207,11 @@ class CashOutRequestView(APIView):
         user = request.user.id
         try:
             artist = Artist.objects.get(user=user)
+            if artist.balance == Decimal('0.00'):
+                return Response({
+                    'status': 'success',
+                    'details': 'No balance in the account.'
+                }, status=400)
             if artist.cashout_requested:
                 return Response({
                     'status': 'success',
