@@ -87,6 +87,11 @@ class Artist(models.Model):
                                         null=True)
     cashout_requested = models.BooleanField(default=False)
     balance = models.DecimalField(max_digits=14, decimal_places=2, default=Decimal('0.00'))
+    ifsc_code = models.TextField(null=True, blank=True)
+    account_number = models.TextField(null=True, blank=True)
+    bank_branch = models.TextField(null=True, blank=True)
+    beneficiary_name = models.TextField(null=True, blank=True)
+    upi_id = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.user.full_name
