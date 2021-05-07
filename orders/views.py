@@ -180,12 +180,13 @@ class OrderProductModifyView(APIView):
                         'details': 'Unauthorized to add to the given order.'
                     }, status=400)
                     
-            product = Product.objects.get(pid=obj.product.pid)
-            if product.stock_left < int(request.data['quantity']):
-                return Response({
-                    'status': 'error',
-                    'details': 'Not enough stock.'
-                }, status=400)
+            if 'quantity' in request.data.keys():
+                product = Product.objects.get(pid=obj.product.pid)
+                if product.stock_left < int(request.data['quantity']):
+                    return Response({
+                        'status': 'error',
+                        'details': 'Not enough stock.'
+                    }, status=400)
             
             serializer = OrderProductCrudSerializer(obj, data=request.data, 
                                                     partial=True)
