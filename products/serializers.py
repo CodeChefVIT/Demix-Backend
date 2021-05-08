@@ -92,4 +92,6 @@ class ProductWithArtistSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['pid', 'name', 'artist', 'display_image']
+        fields = ['pid', 'name', 'artist', 'description', 'category', 'subcategory', 
+                  'stock_left', 'kalafex_price', 'original_price',
+                  'discount_price', 'display_image']
