@@ -35,16 +35,16 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 SITE_NAME = 'Kalafex'
 PROTOCOL = 'https'
 
-#if DEBUG:
-#    DOMAIN = 'beta.kalafex.com'
-#    ALLOWED_HOSTS = ['*']
-#else:
-#    DOMAIN = 'kalafex.com'
-#    CURRENT_HOST = os.environ.get('CURRENT_HOST')
-#    ALLOWED_HOSTS = [
-#        'api.kalafex.com'
-#    ] + [CURRENT_HOST]
-ALLOWED_HOSTS = ['*']
+if DEBUG:
+    DOMAIN = 'beta.kalafex.com'
+    ALLOWED_HOSTS = ['*']
+else:
+    DOMAIN = 'kalafex.com'
+    CURRENT_HOST = os.environ.get('CURRENT_HOST')
+    ALLOWED_HOSTS = [
+        'api.kalafex.com'
+    ]
+    ALLOWED_HOSTS.append(CURRENT_HOST)
 
 # Application definition
 
@@ -85,7 +85,6 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8000"
 ]
 CORS_ALLOW_CREDENTIALS = True
-ALLOWED_HOSTS = []
 
 TEMPLATES = [
     {
