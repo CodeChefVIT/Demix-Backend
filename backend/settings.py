@@ -32,14 +32,13 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
 # Djoser mailing settings
+DOMAIN = 'kalafex.com'
 SITE_NAME = 'Kalafex'
 PROTOCOL = 'https'
 
 if DEBUG:
-    DOMAIN = 'beta.kalafex.com'
     ALLOWED_HOSTS = ['*']
 else:
-    DOMAIN = 'kalafex.com'
     CURRENT_HOST = os.environ.get('CURRENT_HOST')
     ALLOWED_HOSTS = [
         'api.kalafex.com'
