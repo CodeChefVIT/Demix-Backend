@@ -315,6 +315,9 @@ class PaymentVerifyView(APIView):
             artist.balance += (
                 order_product.quantity * product.original_price
             )
+            artist.total_sales += (
+                order_product.quantity * product.original_price
+            )
             order_product.ordered = True
             product.save()
             order_product.save()
