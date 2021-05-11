@@ -18,7 +18,7 @@ class ArtistCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Artist
         fields = '__all__'
-        read_only_fields = ['balance', 'cashout_requested']
+        read_only_fields = ['balance', 'cashout_requested', 'total_sales']
 
 class ArtistSerializer(serializers.ModelSerializer):
     profile_picture = serializers.SerializerMethodField('_get_image_url')
@@ -39,27 +39,17 @@ class ArtistModifySerializer(serializers.ModelSerializer):
     class Meta:
         model = Artist
         fields = '__all__'
-        read_only_fields = ['balance', 'cashout_requested']
+        read_only_fields = ['balance', 'cashout_requested', 'total_sales']
 
 
 class ArtistPersonalSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     total_views = serializers.SerializerMethodField('_get_artist_product_hits')
-    total_sales = serializers.SerializerMethodField('_get_artist_sales')
-    total_earnings = serializers.SerializerMethodField('_get_artist_earnings')
     total_orders = serializers.SerializerMethodField('_get_artist_order_count')
 
     def _get_artist_product_hits(self, obj):
         hits = obj.get_cumulative_product_hits
         return hits
-
-    def _get_artist_sales(self, obj):
-        sales = obj.get_cumulative_sales
-        return sales
-
-    def _get_artist_earnings(self, obj):
-        earnings = obj.get_cumulative_earnings
-        return earnings
 
     def _get_artist_order_count(self, obj):
         order_count = obj.get_cumulative_order_count
@@ -68,7 +58,7 @@ class ArtistPersonalSerializer(serializers.ModelSerializer):
     class Meta:
         model = Artist
         fields = '__all__'
-        read_only_fields = ['balance', 'cashout_requested']
+        read_only_fields = ['balance', 'cashout_requested', 'total_sales']
 
 
 class CustomerCreateSerializer(serializers.ModelSerializer):

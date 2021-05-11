@@ -87,6 +87,8 @@ class Artist(models.Model):
                                         null=True)
     cashout_requested = models.BooleanField(default=False)
     balance = models.DecimalField(max_digits=14, decimal_places=2, default=Decimal('0.00'))
+    # Total sales -> total earnings throughout.
+    total_sales = models.DecimalField(max_digits=14, decimal_places=2, default=Decimal('0.00'))
     ifsc_code = models.TextField(null=True, blank=True)
     account_number = models.TextField(null=True, blank=True)
     bank_branch = models.TextField(null=True, blank=True)
@@ -102,20 +104,6 @@ class Artist(models.Model):
         for product in self.user.product_set.all():
             hits += product.click_count
         return hits
-
-    @property
-    def get_cumulative_sales(self):
-        total_sales = 0
-        for product in self.user.product_set.all():
-            total_sales += product.purchase_count * product.kalafex_price
-        return total_sales
-
-    @property
-    def get_cumulative_earnings(self):
-        total_earnings = 0
-        for product in self.user.product_set.all():
-            total_earnings += product.purchase_count * product.original_price
-        return total_earnings
 
     @property
     def get_cumulative_order_count(self):
