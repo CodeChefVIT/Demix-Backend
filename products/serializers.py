@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, SubCategory, Product, ProductImage
+from .models import Category, SubCategory, Product, ProductImage, ReviewRating
 from accounts.models import Artist
 from accounts.serializers import ArtistSerializer
 from django.contrib.auth import get_user_model
@@ -95,3 +95,9 @@ class ProductWithArtistSerializer(serializers.ModelSerializer):
         fields = ['pid', 'name', 'artist', 'description', 'category', 'subcategory', 
                   'stock_left', 'kalafex_price', 'original_price',
                   'discount_price', 'display_image']
+
+
+class ReviewRatingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReviewRating
+        fields = '__all__'

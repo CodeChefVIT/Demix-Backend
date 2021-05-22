@@ -83,3 +83,14 @@ class ProductImage(models.Model):
 
     def __str__(self):
         return f"{self.product.name} - {self.id}"
+
+
+class ReviewRating(models.Model):
+    rid = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    rating = models.FloatField(default=0.00, null=True)
+    review = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.full_name}'s review on {self.product.name} - {self.product.pid}"

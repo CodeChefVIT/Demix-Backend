@@ -14,7 +14,10 @@ from .views import(
     ParticularProductModifyView,
     AllCategoriesView,
     AllSubCategoriesView,
-    ProductSearchView
+    ProductSearchView,
+    ReviewRatingView,
+    NoAuthReviewRatingListView,
+    AuthReviewRatingListView
 )
 
 urlpatterns = [
@@ -33,4 +36,7 @@ urlpatterns = [
     path('view/product/<pid>/', ParticularProductView.as_view()),
     path('modify/product/<pid>/', ParticularProductModifyView.as_view()),
     path('search/product/', ProductSearchView.as_view()),
+    path('review/<pid>/', ReviewRatingView.as_view()),
+    path('reviews/noauth/<pid>/', NoAuthReviewRatingListView.as_view()),
+    path('reviews/auth/<pid>/', AuthReviewRatingListView.as_view())
 ]

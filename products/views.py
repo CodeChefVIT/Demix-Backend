@@ -11,9 +11,10 @@ from .serializers import(
     ProductSerializer,
     ParticularProductSerializer,
     ProductImageSerializer,
-    ProductImageCreateSerializer
+    ProductImageCreateSerializer,
+    ReviewRatingSerializer
 )
-from .models import Category, SubCategory, Product, ProductImage
+from .models import Category, SubCategory, Product, ProductImage, ReviewRating
 from .pagination import ResultSetPagination
 from rest_framework.response import Response
 from rest_framework import status
@@ -186,4 +187,96 @@ class ProductSearchView(ListAPIView):
                      'category__description']
     parser_classes = [FormParser, MultiPartParser, JSONParser]
     pagination_class = ResultSetPagination
-    
+
+
+class ReviewRatingView(APIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ReviewRatingSerializer
+    parser_classes = [JSONParser]
+
+    def get(self, request, pid):
+        user = request.user.id
+        try:
+            obj = ReviewRating.objects.get(user=user, product=pid)
+            serializer = ReviewRatingSerializer(obj)
+            return Response({
+                'status': 'success',
+                'details': serializer.data
+            }, status=200)
+        except ReviewRating.DoesNotExist:
+            return Response({
+                'status': 'error',
+                'details': 'Rating and review does not exist for this product by this user.'
+            }, status=400)
+
+    def post(self, request, pid):
+        user = request.user.id
+        if ReviewRating.objects.filter(user=user, product=pid).exists():
+            return Response({
+                'status': 'error',
+                'details': 'Rating and review already given for this product, only one allowed.'
+            }, status=400)
+        else:
+            try:
+                request.data['product'] = pid
+                request.data['user'] = user
+                serializer = ReviewRatingSerializer(data=request.data)
+                if serializer.is_valid():
+                    serializer.save()
+                    return Response({
+                        'status': 'success',
+                        'details': serializer.data
+                    }, status=201)
+                else:
+                    return Response({
+                        'status': 'error',
+                        'details': serializer.errors
+                    }, status=400)
+            except:
+                return Response({
+                    'status': 'error',
+                    'details': ''
+                }, status=400)
+
+    def delete(self, request, pid):
+        user = request.user.id
+        try:
+            obj = ReviewRating.objects.get(user=user, product=pid)
+            obj.delete()
+            return Response({
+                'status': 'success',
+                'details': 'Successfully deleted review.'
+            }, status=200)
+        except:
+            return Response({
+                'status': 'error',
+                'details': 'Error in deleting review.'
+            }, status=400)
+
+
+class NoAuthReviewRatingListView(ListAPIView):
+    serializer_class = ReviewRatingSerializer
+    parser_classes = [JSONParser]
+    lookup_url_kwarg = 'pid'
+
+    def get_queryset(self):
+        pid = self.kwargs.get(self.lookup_url_kwarg)
+        reviewratings = ReviewRating.objects.filter(
+            product=pid
+        )
+        return reviewratings
+
+
+class AuthReviewRatingListView(ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = ReviewRatingSerializer
+    parser_classes = [JSONParser]
+    lookup_url_kwarg = 'pid'
+
+    def get_queryset(self):
+        pid = self.kwargs.get(self.lookup_url_kwarg)
+        user = self.request.user.id
+        reviewratings = ReviewRating.objects.filter(
+            product=pid
+        ).exclude(user=user)
+        return reviewratings
