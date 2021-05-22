@@ -205,7 +205,7 @@ class ReviewRatingView(APIView):
             }, status=200)
         except ReviewRating.DoesNotExist:
             return Response({
-                'status': 'error',
+                'status': 'does not exist',
                 'details': 'Rating and review does not exist for this product by this user.'
             }, status=400)
 
@@ -214,7 +214,7 @@ class ReviewRatingView(APIView):
         if ReviewRating.objects.filter(user=user, product=pid).exists():
             return Response({
                 'status': 'error',
-                'details': 'Rating and review already given for this product, only one allowed.'
+                'details': 'Rating and review already given for this product.'
             }, status=400)
         else:
             try:
@@ -266,6 +266,43 @@ class NoAuthReviewRatingListView(ListAPIView):
         )
         return reviewratings
 
+    def get_review_stats(self):
+        pid = self.kwargs.get(self.lookup_url_kwarg)
+        user = self.request.user.id
+        reviewratings = ReviewRating.objects.filter(
+            product=pid
+        )
+        count = ReviewRating.objects.filter(
+            product=pid
+        ).count()
+        average_rating = 0.0
+        for review in reviewratings:
+            if review.rating is not None:
+                average_rating += review.rating
+        average_rating /= count
+        custom_dict = {
+            'average_rating': round(average_rating, 2),
+            'count': count 
+        }
+        return custom_dict
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        
+        reviews_stats = self.get_review_stats()
+        custom_response = {
+            'results': serializer.data
+        }
+        custom_response.update(reviews_stats)
+        return Response(custom_response)
+
 
 class AuthReviewRatingListView(ListAPIView):
     permission_classes = [IsAuthenticated]
@@ -280,3 +317,40 @@ class AuthReviewRatingListView(ListAPIView):
             product=pid
         ).exclude(user=user)
         return reviewratings
+    
+    def get_review_stats(self):
+        pid = self.kwargs.get(self.lookup_url_kwarg)
+        user = self.request.user.id
+        reviewratings = ReviewRating.objects.filter(
+            product=pid
+        )
+        count = ReviewRating.objects.filter(
+            product=pid
+        ).count()
+        average_rating = 0.0
+        for review in reviewratings:
+            if review.rating is not None:
+                average_rating += review.rating
+        average_rating /= count
+        custom_dict = {
+            'average_rating': round(average_rating, 2),
+            'count': count
+        }
+        return custom_dict
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        
+        reviews_stats = self.get_review_stats()
+        custom_response = {
+            'results': serializer.data
+        }
+        custom_response.update(reviews_stats)
+        return Response(custom_response)
