@@ -12,7 +12,8 @@ from .serializers import(
     ParticularProductSerializer,
     ProductImageSerializer,
     ProductImageCreateSerializer,
-    ReviewRatingSerializer
+    ReviewRatingSerializer,
+    ReviewRatingCreateSerializer
 )
 from .models import Category, SubCategory, Product, ProductImage, ReviewRating
 from .pagination import ResultSetPagination
@@ -220,7 +221,7 @@ class ReviewRatingView(APIView):
             try:
                 request.data['product'] = pid
                 request.data['user'] = user
-                serializer = ReviewRatingSerializer(data=request.data)
+                serializer = ReviewRatingCreateSerializer(data=request.data)
                 if serializer.is_valid():
                     serializer.save()
                     return Response({

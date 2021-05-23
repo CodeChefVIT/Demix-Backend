@@ -6,6 +6,12 @@ from djoser.serializers import UserSerializer
 User = get_user_model()
 
 
+class UserNameIDSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'full_name']
+
+
 class KalafexAdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = KalafexAdmin

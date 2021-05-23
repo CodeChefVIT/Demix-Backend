@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Category, SubCategory, Product, ProductImage, ReviewRating
 from accounts.models import Artist
-from accounts.serializers import ArtistSerializer
+from accounts.serializers import ArtistSerializer, UserNameIDSerializer
 from django.contrib.auth import get_user_model
 from djoser.serializers import UserSerializer
 
@@ -98,6 +98,19 @@ class ProductWithArtistSerializer(serializers.ModelSerializer):
 
 
 class ReviewRatingSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField('_get_user_details')
+
+    def _get_user_details(self, obj):
+        user = User.objects.get(id=obj.user.id)
+        serializer = UserNameIDSerializer(user)
+        return serializer.data
+
+    class Meta:
+        model = ReviewRating
+        fields = '__all__'
+
+
+class ReviewRatingCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReviewRating
         fields = '__all__'
