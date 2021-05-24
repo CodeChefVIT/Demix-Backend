@@ -11,7 +11,7 @@ from .serializers import(
     ProductSerializer,
     ParticularProductSerializer,
     ProductImageSerializer,
-    ProductImageCreateSerializer,
+    ProductImageCRUDSerializer,
     ReviewRatingSerializer,
     ReviewRatingCreateSerializer
 )
@@ -54,8 +54,29 @@ class ProductCreateView(CreateAPIView):
 class ProductImageCreateView(CreateAPIView):
     queryset = ProductImage.objects.all()
     permission_classes = [IsAuthenticated, IsArtist]
-    serializer_class = ProductImageCreateSerializer
+    serializer_class = ProductImageCRUDSerializer
     parser_classes = [FormParser, MultiPartParser]
+
+
+class ProductImageDeleteView(APIView):
+    permission_classes = [IsAuthenticated, IsArtist]
+    serializer_class = ProductImageCRUDSerializer
+    parser_classes = [JSONParser]
+
+    def delete(self, request, pi_id):
+        user = request.user.id
+        try:
+            obj = ProductImage.objects.get(id=pi_id, product__artist=user)
+            obj.delete()
+            return Response({
+                'status': 'success',
+                'details': 'Successfully deleted product image.'
+            }, status=200)
+        except:
+            return Response({
+                'status': 'error',
+                'details': 'Error in deleting product image.'
+            }, status=400)
 
 
 class CategoryUpdateDeleteView(RetrieveUpdateDestroyAPIView):

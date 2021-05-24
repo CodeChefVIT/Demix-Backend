@@ -4,6 +4,7 @@ from .views import(
     SubCategoryCreateView,
     ProductCreateView,
     ProductImageCreateView,
+    ProductImageDeleteView,
     CategoryUpdateDeleteView,
     SubCategoryUpdateDeleteView,
     PopularProductListView,
@@ -23,6 +24,7 @@ from .views import(
 urlpatterns = [
     path('create/product/', ProductCreateView.as_view()),
     path('create/product/add_image/', ProductImageCreateView.as_view()),
+    path('delete/product/delete_image/<pi_id>/', ProductImageDeleteView.as_view()),
     path('create/category/', CategoryCreateView.as_view()),
     path('create/subcategory/', SubCategoryCreateView.as_view()),
     path('modify/category/<category>/', CategoryUpdateDeleteView.as_view()),
