@@ -10,6 +10,7 @@ from .serializers import(
     SubCategorySerializer,
     ProductSerializer,
     ParticularProductSerializer,
+    ProductsPerArtistSerializer,
     ProductImageSerializer,
     ProductImageCRUDSerializer,
     ReviewRatingSerializer,
@@ -160,7 +161,7 @@ class ProductbySubCategoryListView(ListAPIView):
 
 
 class ProductbyArtistListView(ListAPIView):
-    serializer_class = ProductSerializer
+    serializer_class = ProductsPerArtistSerializer
     parser_classes = [FormParser, MultiPartParser, JSONParser]
     pagination_class = ResultSetPagination
     lookup_url_kwarg = "artist"
