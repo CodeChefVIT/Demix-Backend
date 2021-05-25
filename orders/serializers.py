@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Order, OrderProduct, Payment, Refund
 from products.serializers import ProductSerializer, ProductWithArtistSerializer
 from accounts.models import Address
-
+from django.core.exceptions import MultipleObjectsReturned
 
 class OrderProductCrudSerializer(serializers.ModelSerializer):
     class Meta:
@@ -89,11 +89,20 @@ class OrderProductExportSerializer(serializers.ModelSerializer):
         return address_string
 
     def _get_pickup_address (self, obj):
-        address = Address.objects.filter(user=obj.product.artist, address_type="Pickup")[0]
-        address_list = [str(address.street), str(address.city),
-                        str(address.state), str(address.pin_code)]
-        address_string = ", ".join(address_list)
-        return address_string
+        try:
+            address = Address.objects.get(user=obj.product.artist, address_type="Pickup")
+            address_list = [str(address.street), str(address.city),
+                            str(address.state), str(address.pin_code)]
+            address_string = ", ".join(address_list)
+            return address_string
+        except MultipleObjectsReturned:
+            address = Address.objects.filter(user=obj.product.artist, address_type="Pickup").first()
+            address_list = [str(address.street), str(address.city),
+                            str(address.state), str(address.pin_code)]
+            address_string = ", ".join(address_list)
+            return address_string
+        except Address.DoesNotExist:
+            return f"Address not provided. Contact number of the artist: {obj.product.artist.phone_number}"
 
     class Meta:
         model = OrderProduct
