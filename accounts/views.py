@@ -90,6 +90,12 @@ class AddressCreateView(APIView):
 
     def post(self, request):
         request.data['user'] = request.user.id
+        if 'address_type' in request.data.keys() and request.data['address_type'] == "Pickup":
+            if Address.objects.filter(user=request.user.id, address_type='Pickup').exists():
+                return Response({
+                    'status': 'error',
+                    'details': 'Only one pickup address allowed.'
+                }, status=400)
         obj = AddressSerializer(data=request.data)
         if obj.is_valid():
             obj.save()
