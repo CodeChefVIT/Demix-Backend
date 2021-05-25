@@ -11,6 +11,9 @@ from decimal import Decimal
 def image_directory_path(instance, filename):
     return f"users/profile_pictures/{instance.user.id}/{filename}/"
 
+def cover_image_directory_path(instance, filename):
+    return f"users/cover_pictures/{instance.user.id}/{filename}/"
+
 class CustomUserManager(BaseUserManager):
 
     def create_user(self, email, password, **kwargs):
@@ -83,8 +86,12 @@ class Artist(models.Model):
     gst_no = models.TextField(blank=True, null=True)
     profile_picture = models.ImageField(verbose_name='profile picture',
                                         upload_to=image_directory_path,
-                                        default='uploads/profile_pictures/default.png',
+                                        default='users/profile_pictures/default.jpg',
                                         null=True)
+    cover_picture = models.ImageField(verbose_name='cover picture',
+                                      upload_to=cover_image_directory_path,
+                                      default='users/cover_pictures/default.jpg',
+                                      null=True)
     cashout_requested = models.BooleanField(default=False)
     balance = models.DecimalField(max_digits=14, decimal_places=2, default=Decimal('0.00'))
     # Total sales -> total earnings throughout.
