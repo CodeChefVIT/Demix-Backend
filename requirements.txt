@@ -25,7 +25,7 @@ itypes==1.2.0
 Jinja2==2.11.3
 jmespath==0.10.0
 MarkupSafe==1.1.1
-numpy==1.20.2
+numpy==1.21.0
 oauthlib==3.1.0
 openpyxl==3.0.7
 pandas==1.2.4
