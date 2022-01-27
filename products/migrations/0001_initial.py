@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
                 ('display_image', models.ImageField(default='products/image_unavailable.png', upload_to=products.models.product_display_image_path)),
                 ('stock_left', models.IntegerField(default=0)),
                 ('original_price', models.DecimalField(decimal_places=2, max_digits=11)),
-                ('kalafex_price', models.DecimalField(decimal_places=2, max_digits=12)),
+                ('demix_price', models.DecimalField(decimal_places=2, max_digits=12)),
                 ('discount_price', models.DecimalField(blank=True, decimal_places=2, max_digits=12, null=True)),
                 ('click_count', models.BigIntegerField(default=0)),
                 ('purchase_count', models.BigIntegerField(default=0)),

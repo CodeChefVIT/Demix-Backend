@@ -18,7 +18,7 @@ class Category(models.Model):
     
     def save(self, *args, **kwargs):
         for product in self.product_set.all():
-            product.kalafex_price = (product.original_price * 
+            product.demix_price = (product.original_price * 
                                      (100+self.commission) / 100)
             product.save()
         super(Category, self).save(*args, **kwargs)
@@ -58,7 +58,7 @@ class Product(models.Model):
     subcategory = models.ForeignKey(SubCategory, on_delete=models.SET_NULL, null=True, blank=True)
     stock_left = models.IntegerField(default=0)
     original_price = models.DecimalField(max_digits=11, decimal_places=2)
-    kalafex_price = models.DecimalField(max_digits=12, decimal_places=2)
+    demix_price = models.DecimalField(max_digits=12, decimal_places=2)
     discount_price = models.DecimalField(max_digits=12, decimal_places=2,
                                          blank=True, null=True)
     click_count = models.BigIntegerField(default=0)
@@ -69,7 +69,7 @@ class Product(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        self.kalafex_price = self.original_price * (100+self.category.commission) / 100
+        self.demix_price = self.original_price * (100+self.category.commission) / 100
         super(Product, self).save(*args, **kwargs)
 
     class Meta:

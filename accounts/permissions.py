@@ -3,10 +3,10 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-class IsKalafexAdmin(BasePermission):
+class IsDemixAdmin(BasePermission):
 
     def has_permission(self, request, view):
-        return bool(request.user.is_kalafex_admin)
+        return bool(request.user.is_demix_admin)
 
 class IsArtist(BasePermission):
 

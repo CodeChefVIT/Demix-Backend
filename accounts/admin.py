@@ -19,7 +19,7 @@ class UserAdmin(BaseUserAdmin):
         ),
         (
             _('Website Roles'),
-            {'fields': ('is_kalafex_admin', 'is_artist', 'is_customer')}
+            {'fields': ('is_demix_admin', 'is_artist', 'is_customer')}
         ),
         (
             _('Registration details'),
@@ -30,14 +30,14 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password', 'full_name', 'is_kalafex_admin',
+            'fields': ('email', 'password', 'full_name', 'is_demix_admin',
                        'is_artist', 'is_customer', 'is_first_login')
         }),
     )
 
 
 admin.site.register(models.User, UserAdmin)
-admin.site.register(models.KalafexAdmin)
+admin.site.register(models.DemixAdmin)
 admin.site.register(models.Artist)
 admin.site.register(models.Customer)
 admin.site.register(models.Address)

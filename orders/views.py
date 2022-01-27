@@ -5,7 +5,7 @@ from django.conf import settings
 from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework.views import APIView
-from accounts.permissions import IsArtist, IsKalafexAdmin, IsArtist
+from accounts.permissions import IsArtist, IsDemixAdmin, IsArtist
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.parsers import JSONParser
@@ -23,7 +23,7 @@ from .serializers import(
     OrderDeliverySerializer,
     OrderProductHandOverSerializer
 )
-from accounts.permissions import IsKalafexAdmin
+from accounts.permissions import IsDemixAdmin
 from accounts.models import Address, Artist
 from products.models import Product
 
@@ -371,7 +371,7 @@ class ArtistOrderProductView(ListAPIView):
 
 
 class OrderProductHandOverView(APIView):
-    permission_classes = [permissions.IsAuthenticated, IsKalafexAdmin]
+    permission_classes = [permissions.IsAuthenticated, IsDemixAdmin]
     parser_classes = [JSONParser]
     serializer_class = OrderProductHandOverSerializer
 
@@ -431,7 +431,7 @@ class RequestRefundView(APIView):
 
 
 class RefundRequestsView(ListAPIView):
-    permission_classes = [permissions.IsAuthenticated, IsKalafexAdmin]
+    permission_classes = [permissions.IsAuthenticated, IsDemixAdmin]
     parser_classes = [JSONParser]
     serializer_class = RefundOrderSerializer
     pagination_class = ResultSetPagination
@@ -443,7 +443,7 @@ class RefundRequestsView(ListAPIView):
 
 
 class GrantRefundView(APIView):
-    permission_classes = [permissions.IsAuthenticated, IsKalafexAdmin]
+    permission_classes = [permissions.IsAuthenticated, IsDemixAdmin]
     parser_classes = [JSONParser]
     serializer_class = RefundOrderSerializer
 
@@ -468,7 +468,7 @@ class GrantRefundView(APIView):
 
 class PendingOrdersView(ListAPIView):
     # Delivery-pending orders.
-    permission_classes = [permissions.IsAuthenticated, IsKalafexAdmin]
+    permission_classes = [permissions.IsAuthenticated, IsDemixAdmin]
     parser_classes = [JSONParser]
     serializer_class = OrderDeliverySerializer
     pagination_class = ResultSetPagination
@@ -480,7 +480,7 @@ class PendingOrdersView(ListAPIView):
 
 
 class DeliveryStatusUpdateView(APIView):
-    permission_classes = [permissions.IsAuthenticated, IsKalafexAdmin]
+    permission_classes = [permissions.IsAuthenticated, IsDemixAdmin]
     parser_classes = [JSONParser]
     serializer_class = OrderDeliverySerializer
 
@@ -501,7 +501,7 @@ class DeliveryStatusUpdateView(APIView):
 
 
 class DailyOrderView(PandasView):
-    permission_classes = [permissions.IsAuthenticated, IsKalafexAdmin]
+    permission_classes = [permissions.IsAuthenticated, IsDemixAdmin]
     serializer_class = OrderProductExportSerializer
     renderer_classes = [PandasExcelRenderer]
 

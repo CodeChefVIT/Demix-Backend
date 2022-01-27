@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import KalafexAdmin, Artist, Customer, Address
+from .models import DemixAdmin, Artist, Customer, Address
 from djoser.serializers import UserSerializer
 
 User = get_user_model()
@@ -12,9 +12,9 @@ class UserNameIDSerializer(serializers.ModelSerializer):
         fields = ['id', 'full_name']
 
 
-class KalafexAdminSerializer(serializers.ModelSerializer):
+class DemixAdminSerializer(serializers.ModelSerializer):
     class Meta:
-        model = KalafexAdmin
+        model = DemixAdmin
         fields = '__all__'
 
 

@@ -67,7 +67,7 @@ class OrderProduct(models.Model):
 
     @property
     def get_total_product_price(self):
-        return self.quantity * self.product.kalafex_price
+        return self.quantity * self.product.demix_price
 
     @property
     def get_total_discount_product_price(self):

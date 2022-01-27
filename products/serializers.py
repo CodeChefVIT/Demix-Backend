@@ -26,9 +26,9 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['pid', 'name', 'artist', 'description', 'category',
-                  'subcategory', 'original_price', 'kalafex_price',
+                  'subcategory', 'original_price', 'demix_price',
                   'display_image', 'discount_price', 'stock_left']
-        read_only_fields = ['kalafex_price']
+        read_only_fields = ['demix_price']
 
     def create(self, validated_data):
         return Product.objects.create(**validated_data)
@@ -61,7 +61,7 @@ class ParticularProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['pid', 'name', 'description', 'category', 'subcategory', 
-                  'stock_left', 'kalafex_price', 'artist', 'original_price',
+                  'stock_left', 'demix_price', 'artist', 'original_price',
                   'discount_price', 'display_image', 'image_list']
 
 
@@ -82,7 +82,7 @@ class ProductsPerArtistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['pid', 'name', 'description', 'category', 'subcategory', 
-                  'stock_left', 'kalafex_price', 'artist', 'original_price',
+                  'stock_left', 'demix_price', 'artist', 'original_price',
                   'discount_price', 'display_image', 'image_list']
 
 
@@ -114,7 +114,7 @@ class ProductWithArtistSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = ['pid', 'name', 'artist', 'description', 'category', 'subcategory', 
-                  'stock_left', 'kalafex_price', 'original_price',
+                  'stock_left', 'demix_price', 'original_price',
                   'discount_price', 'display_image']
 
 

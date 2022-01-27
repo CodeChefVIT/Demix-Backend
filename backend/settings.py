@@ -32,8 +32,8 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
 
 # Djoser mailing settings
-DOMAIN = 'kalafex.com'
-SITE_NAME = 'Kalafex'
+DOMAIN = 'demix.com'
+SITE_NAME = 'demix'
 PROTOCOL = 'https'
 
 if DEBUG:
@@ -41,7 +41,7 @@ if DEBUG:
 else:
     CURRENT_HOST = os.environ.get('CURRENT_HOST')
     ALLOWED_HOSTS = [
-        'api.kalafex.com'
+        'api.demix.com'
     ]
     ALLOWED_HOSTS.append(CURRENT_HOST)
 
@@ -78,8 +78,8 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'backend.urls'
 
 CORS_ALLOWED_ORIGINS = [
-    "https://kalafex.com",
-    "https://beta.kalafex.com",
+    "https://demix.com",
+    "https://beta.demix.com",
     "http://localhost:8080",
     "http://localhost:3000",
     "http://localhost:3001",

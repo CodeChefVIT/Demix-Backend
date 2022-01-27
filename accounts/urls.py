@@ -1,6 +1,6 @@
 from django.urls import path, include
 from .views import(
-    KalafexAdminRegisterView,
+    DemixAdminRegisterView,
     ArtistRegisterView,
     CustomerRegisterView,
     AddressCreateView,
@@ -18,7 +18,7 @@ from .views import(
 )
 
 urlpatterns = [
-    path('kalafex_admin/', KalafexAdminRegisterView.as_view()),
+    path('demix_admin/', DemixAdminRegisterView.as_view()),
     path('artist/', ArtistRegisterView.as_view()),
     path('customer/', CustomerRegisterView.as_view()),
     path('add_address/', AddressCreateView.as_view()),

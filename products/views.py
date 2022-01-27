@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
-from accounts.permissions import IsKalafexAdmin, IsArtist
+from accounts.permissions import IsDemixAdmin, IsArtist
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, \
     DestroyAPIView, RetrieveUpdateDestroyAPIView
@@ -25,14 +25,14 @@ from rest_framework.filters import SearchFilter
 
 class CategoryCreateView(CreateAPIView):
     queryset = Category.objects.all()
-    permission_classes = [IsAuthenticated, IsKalafexAdmin]
+    permission_classes = [IsAuthenticated, IsDemixAdmin]
     serializer_class = CategorySerializer
     parser_classes = [JSONParser]
 
 
 class SubCategoryCreateView(CreateAPIView):
     queryset = SubCategory.objects.all()
-    permission_classes = [IsAuthenticated, IsKalafexAdmin]
+    permission_classes = [IsAuthenticated, IsDemixAdmin]
     serializer_class = SubCategorySerializer
     parser_classes = [JSONParser]
 

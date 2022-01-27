@@ -3,7 +3,7 @@ from decimal import Decimal
 from django.shortcuts import render
 from .models import(
     User,
-    KalafexAdmin,
+    DemixAdmin,
     Artist,
     Customer,
     Address
@@ -11,10 +11,10 @@ from .models import(
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework import permissions
-from .permissions import IsKalafexAdmin, IsArtist
+from .permissions import IsDemixAdmin, IsArtist
 from rest_framework.views import APIView
 from .serializers import (
-    KalafexAdminSerializer,
+    DemixAdminSerializer,
     ArtistCreateSerializer,
     ArtistSerializer,
     ArtistModifySerializer,
@@ -27,13 +27,13 @@ from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView
 # Create your views here.
 
 
-class KalafexAdminRegisterView(APIView):
+class DemixAdminRegisterView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [JSONParser]
 
     def post(self, request):
         request.data['user'] = request.user.id
-        obj = KalafexAdminSerializer(data=request.data)
+        obj = DemixAdminSerializer(data=request.data)
         if obj.is_valid():
             obj.save()
             return Response({
@@ -238,7 +238,7 @@ class CashOutRequestView(APIView):
 
 
 class CashOutView(ListAPIView):
-    permission_classes = [permissions.IsAuthenticated, IsKalafexAdmin]
+    permission_classes = [permissions.IsAuthenticated, IsDemixAdmin]
     parser_classes = [JSONParser]
     serializer_class = ArtistPersonalSerializer
     pagination_class = ResultSetPagination
@@ -249,7 +249,7 @@ class CashOutView(ListAPIView):
 
 
 class GrantCashOutView(APIView):
-    permission_classes = [permissions.IsAuthenticated, IsKalafexAdmin]
+    permission_classes = [permissions.IsAuthenticated, IsDemixAdmin]
     parser_classes = [JSONParser]
     
     def post(self, request):

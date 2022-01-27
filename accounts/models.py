@@ -47,8 +47,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_customer = models.BooleanField(default=False)
     is_artist = models.BooleanField(default=False)
 
-    #Kalafex administration
-    is_kalafex_admin = models.BooleanField(default=False)
+    #Demix administration
+    is_demix_admin = models.BooleanField(default=False)
 
     #Website administration
     is_staff = models.BooleanField(default=False)
@@ -63,12 +63,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
 
-    REQUIRED_FIELDS = ['full_name', 'is_kalafex_admin', 'is_artist', 
+    REQUIRED_FIELDS = ['full_name', 'is_demix_admin', 'is_artist', 
                        'is_customer', 'is_first_login', 'date_of_birth',
                        'phone_number']
 
 
-class KalafexAdmin(models.Model):
+class DemixAdmin(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,
                                 primary_key=True)
 

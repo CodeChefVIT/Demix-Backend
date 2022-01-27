@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
                 ('is_first_login', models.BooleanField(default=True)),
                 ('is_customer', models.BooleanField(default=False)),
                 ('is_artist', models.BooleanField(default=False)),
-                ('is_kalafex_admin', models.BooleanField(default=False)),
+                ('is_demix_admin', models.BooleanField(default=False)),
                 ('is_staff', models.BooleanField(default=False)),
                 ('is_superuser', models.BooleanField(default=False)),
                 ('date_of_birth', models.DateField()),
@@ -71,7 +71,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='KalafexAdmin',
+            name='DemixAdmin',
             fields=[
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, primary_key=True, serialize=False, to='accounts.user')),
             ],
